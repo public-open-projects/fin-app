@@ -28,12 +28,16 @@ public class AuthenticateClientUseCaseImpl implements AuthenticateClientUseCase 
             throw new AuthenticationException("Invalid credentials");
         }
         
-        // Authenticate with Auth0 and get JWT token
-        String token = idpProvider.authenticateUser(request.email(), request.password());
-        
-        return new AuthenticationResponse(
-            token,
-            request.email()
-        );
+        try {
+            // Authenticate with Auth0 and get JWT token
+            String token = idpProvider.authenticateUser(request.email(), request.password());
+            
+            return new AuthenticationResponse(
+                token,
+                request.email()
+            );
+        } catch (Exception e) {
+            throw new AuthenticationException("Invalid credentials");
+        }
     }
 }

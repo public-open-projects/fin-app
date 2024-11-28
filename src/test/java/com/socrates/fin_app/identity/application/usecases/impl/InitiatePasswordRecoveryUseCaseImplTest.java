@@ -62,7 +62,7 @@ class InitiatePasswordRecoveryUseCaseImplTest {
         when(clientRepository.existsByEmail(email)).thenReturn(false);
 
         // When & Then
-        Exception exception = assertThrows(IllegalStateException.class, 
+        Exception exception = assertThrows(UserNotFoundException.class, 
             () -> initiatePasswordRecoveryUseCase.execute(request));
         assertEquals("Email not found", exception.getMessage());
         verify(notificationService, never()).sendPasswordRecoveryEmail(anyString(), anyString());
