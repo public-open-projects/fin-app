@@ -17,6 +17,11 @@ public class BankerProfile extends Profile {
         super(password, ProfileType.BANKER);
     }
 
+    public BankerProfile(String email, String password) {
+        this(password);
+        setEmail(email);
+    }
+
     public void updateProfile(String branch, String position) {
         this.branch = branch;
         this.position = position;
@@ -28,23 +33,5 @@ public class BankerProfile extends Profile {
 
     public String getPosition() {
         return position;
-    }
-}
-package com.socrates.fin_app.identity.domain.entities;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "banker_profiles")
-public class BankerProfile extends Profile {
-    
-    protected BankerProfile() {
-        // JPA
-    }
-    
-    public BankerProfile(String email, String password) {
-        super(password, ProfileType.BANKER);
-        setEmail(email);
     }
 }

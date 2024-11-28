@@ -17,6 +17,11 @@ public class AdminProfile extends Profile {
         super(password, ProfileType.ADMIN);
     }
 
+    public AdminProfile(String email, String password) {
+        this(password);
+        setEmail(email);
+    }
+
     public void updateProfile(String department, String role) {
         this.department = department;
         this.role = role;
@@ -28,23 +33,5 @@ public class AdminProfile extends Profile {
 
     public String getRole() {
         return role;
-    }
-}
-package com.socrates.fin_app.identity.domain.entities;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "admin_profiles")
-public class AdminProfile extends Profile {
-    
-    protected AdminProfile() {
-        // JPA
-    }
-    
-    public AdminProfile(String email, String password) {
-        super(password, ProfileType.ADMIN);
-        setEmail(email);
     }
 }
