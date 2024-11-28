@@ -3,7 +3,7 @@ package com.socrates.fin_app.identity.infrastructure.providers.impl;
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.CreatedUser;
-import com.auth0.net.Request;
+import com.auth0.net.SignUpRequest;
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +22,7 @@ class Auth0IdpProviderTest {
     private AuthAPI auth0Client;
 
     @Mock
-    private Request<CreatedUser> request;
-    
-    @Mock
-    private Response<CreatedUser> response;
+    private SignUpRequest signUpRequest;
 
     private Auth0IdpProvider auth0IdpProvider;
 
@@ -40,9 +37,8 @@ class Auth0IdpProviderTest {
         CreatedUser createdUser = new CreatedUser();
         
         when(auth0Client.signUp(anyString(), anyString(), anyString()))
-            .thenReturn(request);
-        when(request.execute()).thenReturn(response);
-        when(response.getBody()).thenReturn(createdUser);
+            .thenReturn(signUpRequest);
+        when(signUpRequest.execute()).thenReturn(createdUser);
 
         // When & Then
         assertDoesNotThrow(() -> 
@@ -54,8 +50,8 @@ class Auth0IdpProviderTest {
     void whenAuth0Fails_thenThrowsAuthenticationException() throws Auth0Exception {
         // Given
         when(auth0Client.signUp(anyString(), anyString(), anyString()))
-            .thenReturn(request);
-        when(request.execute()).thenThrow(new Auth0Exception("Auth0 error"));
+            .thenReturn(signUpRequest);
+        when(signUpRequest.execute()).thenThrow(new Auth0Exception("Auth0 error"));
 
         // When & Then
         assertThrows(AuthenticationException.class, () ->
