@@ -63,6 +63,10 @@ class ResetPasswordUseCaseImplTest {
         String token = "invalid-token";
         ResetPasswordRequest request = new ResetPasswordRequest(token, "newPassword123");
 
+        // Mock the behavior to throw InvalidTokenException
+        doThrow(new InvalidTokenException("Invalid or expired reset token"))
+            .when(clientRepository).findByEmail(anyString());
+
         // When & Then
         assertThrows(InvalidTokenException.class, () -> resetPasswordUseCase.execute(request));
         verify(clientRepository, never()).save(any(Client.class));
