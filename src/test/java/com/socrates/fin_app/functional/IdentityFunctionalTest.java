@@ -229,18 +229,15 @@ class IdentityFunctionalTest {
         assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
         // Second registration should fail with 400 Bad Request
-        try {
-            restTemplate.exchange(
-                "/api/clients/register",
-                HttpMethod.POST,
-                new HttpEntity<>(duplicateRequest, headers),
-                String.class
-            );
-            fail("Expected exception was not thrown");
-        } catch (HttpClientErrorException e) {
-            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-            assertTrue(e.getResponseBodyAsString().contains("Email already registered"));
-        }
+        ResponseEntity<String> secondResponse = restTemplate.exchange(
+            "/api/clients/register",
+            HttpMethod.POST,
+            new HttpEntity<>(duplicateRequest, headers),
+            String.class
+        );
+        
+        assertEquals(HttpStatus.BAD_REQUEST, secondResponse.getStatusCode());
+        assertTrue(secondResponse.getBody().contains("Email already registered"));
 
         // Test login with invalid credentials
         LoginRequest invalidLogin = new LoginRequest(
@@ -248,35 +245,27 @@ class IdentityFunctionalTest {
             "WrongPassword"
         );
 
-        try {
-            restTemplate.exchange(
-                "/api/clients/login",
-                HttpMethod.POST,
-                new HttpEntity<>(invalidLogin, headers),
-                String.class
-            );
-            fail("Expected exception was not thrown");
-        } catch (HttpClientErrorException e) {
-            assertEquals(HttpStatus.UNAUTHORIZED, e.getStatusCode());
-        }
+        ResponseEntity<String> loginResponse = restTemplate.exchange(
+            "/api/clients/login",
+            HttpMethod.POST,
+            new HttpEntity<>(invalidLogin, headers),
+            String.class
+        );
+        assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatusCode());
 
         // 3. Test password recovery for non-existent email
         ForgotPasswordRequest invalidRecovery = new ForgotPasswordRequest(
             "nonexistent@example.com"
         );
 
-        try {
-            restTemplate.exchange(
-                "/api/clients/forgot-password",
-                HttpMethod.POST,
-                new HttpEntity<>(invalidRecovery, headers),
-                String.class
-            );
-            fail("Expected exception was not thrown");
-        } catch (HttpClientErrorException e) {
-            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
-            assertTrue(e.getResponseBodyAsString().contains("Email not found"));
-        }
+        ResponseEntity<String> recoveryResponse = restTemplate.exchange(
+            "/api/clients/forgot-password",
+            HttpMethod.POST,
+            new HttpEntity<>(invalidRecovery, headers),
+            String.class
+        );
+        assertEquals(HttpStatus.NOT_FOUND, recoveryResponse.getStatusCode());
+        assertTrue(recoveryResponse.getBody().contains("Email not found"));
 
         // 4. Test profile update without authentication
         UpdateProfileRequest updateRequest = new UpdateProfileRequest(
@@ -286,17 +275,13 @@ class IdentityFunctionalTest {
             "1234567890"
         );
 
-        try {
-            restTemplate.exchange(
-                "/api/clients/123/profile",
-                HttpMethod.PUT,
-                new HttpEntity<>(updateRequest, headers),
-                String.class
-            );
-            fail("Expected exception was not thrown");
-        } catch (HttpClientErrorException e) {
-            assertEquals(HttpStatus.UNAUTHORIZED, e.getStatusCode());
-        }
+        ResponseEntity<String> updateResponse = restTemplate.exchange(
+            "/api/clients/123/profile",
+            HttpMethod.PUT,
+            new HttpEntity<>(updateRequest, headers),
+            String.class
+        );
+        assertEquals(HttpStatus.UNAUTHORIZED, updateResponse.getStatusCode());
     }
 
     @Test
