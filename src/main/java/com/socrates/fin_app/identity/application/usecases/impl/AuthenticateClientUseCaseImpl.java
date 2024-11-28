@@ -18,7 +18,7 @@ public class AuthenticateClientUseCaseImpl implements AuthenticateClientUseCase 
     @Override
     public AuthenticationResponse execute(LoginRequest request) {
         // TODO: Add actual authentication logic
-        String token = jwtTokenProvider.createToken(request.email());
+        String token = jwtTokenProvider.createToken(request.email(), "CLIENT");
         
         return new AuthenticationResponse(
             token,
