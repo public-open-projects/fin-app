@@ -6,6 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.socrates.fin_app.common.annotations.ApiController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
+import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
@@ -28,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/clients")
 @RestControllerAdvice
 public class ClientController {
+    private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
     private final RegisterClientUseCase registerClientUseCase;
     private final AuthenticateClientUseCase authenticateClientUseCase;
     private final InitiatePasswordRecoveryUseCase initiatePasswordRecoveryUseCase;
@@ -98,6 +103,16 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> handleAuthenticationException(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -105,6 +120,7 @@ public class ClientController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
+        logger.error("Unexpected error occurred", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("An unexpected error occurred");
     }
