@@ -14,7 +14,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.any;
 
 @ExtendWith(MockitoExtension.class)
 class RegisterClientUseCaseImplTest {
@@ -92,7 +97,7 @@ class RegisterClientUseCaseImplTest {
         ClientRegistrationRequest request = new ClientRegistrationRequest(email, password, "John", "Doe");
         
         when(clientRepository.existsByEmail(email)).thenReturn(false);
-        when(idpProvider.createClientAccount(email, password)).thenReturn(true);
+        doNothing().when(idpProvider).createClientAccount(email, password);
         when(clientRepository.save(any(ClientProfile.class))).thenThrow(new RuntimeException("Unexpected error"));
 
         // When & Then
