@@ -31,12 +31,19 @@ public class TestSecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/clients/register", 
-                               "/api/clients/login",
-                               "/api/clients/forgot-password",
-                               "/api/admins/login",
-                               "/api/bankers/login",
-                               "/error").permitAll()
+                // Public endpoints that don't require authentication
+                .requestMatchers(
+                    "/api/clients/register",
+                    "/api/clients/login",
+                    "/api/clients/forgot-password",
+                    "/api/admins/login",
+                    "/api/bankers/login",
+                    "/error"
+                ).permitAll()
+                // Protected endpoints that require authentication
+                .requestMatchers("/api/clients/**").hasRole("CLIENT")
+                .requestMatchers("/api/admins/**").hasRole("ADMIN")
+                .requestMatchers("/api/bankers/**").hasRole("BANKER")
                 .anyRequest().authenticated())
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .httpBasic(basic -> basic
@@ -59,12 +66,25 @@ public class TestSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails testUser = User.withDefaultPasswordEncoder()
-            .username("test@example.com")  // Match the test email
-            .password("Password123!")      // Match the test password
-            .roles("CLIENT")              // Add appropriate role
+        UserDetails testClient = User.withDefaultPasswordEncoder()
+            .username("test@example.com")
+            .password("Password123!")
+            .roles("CLIENT")
             .build();
-        return new InMemoryUserDetailsManager(testUser);
+
+        UserDetails testAdmin = User.withDefaultPasswordEncoder()
+            .username("admin@example.com")
+            .password("AdminPass123!")
+            .roles("ADMIN")
+            .build();
+
+        UserDetails testBanker = User.withDefaultPasswordEncoder()
+            .username("banker@example.com")
+            .password("BankerPass123!")
+            .roles("BANKER")
+            .build();
+
+        return new InMemoryUserDetailsManager(testClient, testAdmin, testBanker);
     }
 
     @Bean
