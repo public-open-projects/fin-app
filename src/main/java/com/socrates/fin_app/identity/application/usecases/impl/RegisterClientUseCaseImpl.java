@@ -41,7 +41,7 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
                 idpProvider.createClientAccount(request.email(), request.password());
             } catch (Exception e) {
                 logger.error("IDP account creation failed for email: {}", request.email(), e);
-                throw new IllegalStateException("IDP account creation failed: " + e.getMessage());
+                throw new IllegalStateException("Registration failed: " + e.getMessage());
             }
             
             // If IDP creation successful, create local client record
