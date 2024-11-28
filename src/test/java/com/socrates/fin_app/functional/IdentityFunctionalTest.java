@@ -62,15 +62,14 @@ class IdentityFunctionalTest {
         // Configure RestTemplate
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setConnectTimeout(5000);
-        factory.setReadTimeout(5000);
         
         // Configure error handling
         restTemplate.getRestTemplate().setRequestFactory(factory);
         restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
             @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
-                HttpStatus statusCode = response.getStatusCode();
-                return statusCode.series() == HttpStatus.Series.SERVER_ERROR;
+            public boolean hasError(int statusCode) {
+                // Only treat 5xx errors as errors
+                return statusCode >= 500;
             }
         });
     }
