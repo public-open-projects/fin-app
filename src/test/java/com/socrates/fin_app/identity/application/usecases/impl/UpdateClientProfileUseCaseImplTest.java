@@ -91,7 +91,7 @@ class UpdateClientProfileUseCaseImplTest {
         Exception exception = assertThrows(IllegalStateException.class,
             () -> updateClientProfileUseCase.execute(clientId, request));
         assertEquals("Email already in use", exception.getMessage());
-        verify(clientRepository, never()).save(any(Client.class));
+        verify(clientRepository, never()).save(any(ClientProfile.class));
     }
 
     @Test

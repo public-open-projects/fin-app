@@ -60,7 +60,7 @@ class RegisterClientUseCaseImplTest {
         String password = "password123";
         ClientRegistrationRequest request = new ClientRegistrationRequest(email, password);
         
-        when(clientRepository.save(any(Client.class)))
+        when(clientRepository.save(any(ClientProfile.class)))
             .thenThrow(new DataIntegrityViolationException("Duplicate email"));
 
         // When & Then
@@ -83,6 +83,6 @@ class RegisterClientUseCaseImplTest {
         Exception exception = assertThrows(IllegalStateException.class, 
             () -> registerClientUseCase.execute(request));
         assertTrue(exception.getMessage().contains("Registration failed"));
-        verify(clientRepository, never()).save(any(Client.class));
+        verify(clientRepository, never()).save(any(ClientProfile.class));
     }
 }
