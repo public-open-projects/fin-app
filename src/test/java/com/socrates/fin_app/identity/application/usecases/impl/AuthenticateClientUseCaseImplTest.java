@@ -38,7 +38,7 @@ class AuthenticateClientUseCaseImplTest {
         String expectedToken = "jwt-token";
         LoginRequest request = new LoginRequest(email, password);
         
-        when(clientRepository.existsByEmail(email)).thenReturn(true);
+        // Only stub the authenticateUser call since we removed the existsByEmail check
         when(idpProvider.authenticateUser(email, password)).thenReturn(expectedToken);
 
         // When
@@ -48,5 +48,8 @@ class AuthenticateClientUseCaseImplTest {
         assertNotNull(response);
         assertEquals(expectedToken, response.token());
         assertEquals(email, response.email());
+        
+        // Verify the mock was called
+        verify(idpProvider).authenticateUser(email, password);
     }
 }
