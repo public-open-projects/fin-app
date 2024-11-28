@@ -56,11 +56,12 @@ class IdentityFunctionalTest {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         
-        // Configure RestTemplate
+        // Configure RestTemplate with proper error handling
         restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
-            public boolean hasError(HttpStatus status) {
-                return status.series() == HttpStatus.Series.SERVER_ERROR;
+            @Override
+            protected boolean hasError(HttpStatus statusCode) {
+                return statusCode.series() == HttpStatus.Series.SERVER_ERROR;
             }
         });
     }
@@ -68,7 +69,7 @@ class IdentityFunctionalTest {
     @Test
     @Transactional
     void testCompleteClientFlow() {
-        // 1. Register new client (public endpoint)
+        // 1. Register new client
         ClientRegistrationRequest registrationRequest = new ClientRegistrationRequest(
             "test@example.com",
             "Password123!"
@@ -102,7 +103,7 @@ class IdentityFunctionalTest {
         assertNotNull(loginResponse.getBody());
         String token = loginResponse.getBody().token();
 
-        // Create authenticated headers
+        // Create authenticated headers with Bearer token
         HttpHeaders authHeaders = new HttpHeaders();
         authHeaders.setContentType(MediaType.APPLICATION_JSON);
         authHeaders.setBearerAuth(token);
@@ -115,6 +116,13 @@ class IdentityFunctionalTest {
             "1234567890"
         );
 
+        // Add small delay to ensure token is processed
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
         ResponseEntity<ProfileResponse> updateResponse = restTemplate.exchange(
             "/api/clients/" + clientId + "/profile",
             HttpMethod.PUT,
@@ -123,6 +131,7 @@ class IdentityFunctionalTest {
         );
 
         assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
+        assertNotNull(updateResponse.getBody());
         assertEquals("John", updateResponse.getBody().firstName());
 
         // 4. Test password recovery (public endpoint)
@@ -197,12 +206,13 @@ class IdentityFunctionalTest {
 
     @Test
     void testErrorScenarios() {
-        // Test registration with existing email (public endpoint)
+        // Test registration with existing email
         ClientRegistrationRequest duplicateRequest = new ClientRegistrationRequest(
             "existing@example.com",
             "Password123!"
         );
 
+        // First registration should succeed
         ResponseEntity<RegistrationResponse> firstResponse = restTemplate.exchange(
             "/api/clients/register",
             HttpMethod.POST,
@@ -211,29 +221,36 @@ class IdentityFunctionalTest {
         );
         assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
-        // Second registration should fail
-        ResponseEntity<String> duplicateResponse = restTemplate.exchange(
-            "/api/clients/register",
-            HttpMethod.POST,
-            new HttpEntity<>(duplicateRequest, headers),
-            String.class
-        );
-        assertEquals(HttpStatus.BAD_REQUEST, duplicateResponse.getStatusCode());
+        try {
+            // Second registration should fail
+            restTemplate.exchange(
+                "/api/clients/register",
+                HttpMethod.POST,
+                new HttpEntity<>(duplicateRequest, headers),
+                String.class
+            );
+            fail("Expected exception was not thrown");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
 
-        // 2. Test login with invalid credentials
+        // Test login with invalid credentials
         LoginRequest invalidLogin = new LoginRequest(
             "nonexistent@example.com",
             "WrongPassword"
         );
 
-        ResponseEntity<String> invalidLoginResponse = restTemplate.exchange(
-            "/api/clients/login",
-            HttpMethod.POST,
-            new HttpEntity<>(invalidLogin, headers),
-            String.class
-        );
-
-        assertEquals(HttpStatus.UNAUTHORIZED, invalidLoginResponse.getStatusCode());
+        try {
+            restTemplate.exchange(
+                "/api/clients/login",
+                HttpMethod.POST,
+                new HttpEntity<>(invalidLogin, headers),
+                String.class
+            );
+            fail("Expected exception was not thrown");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.UNAUTHORIZED, e.getStatusCode());
+        }
 
         // 3. Test password recovery for non-existent email
         ForgotPasswordRequest invalidRecovery = new ForgotPasswordRequest(
@@ -269,34 +286,40 @@ class IdentityFunctionalTest {
 
     @Test
     void testValidationScenarios() {
-        // 1. Test registration with invalid email format
+        // Test registration with invalid email format
         ClientRegistrationRequest invalidEmailRequest = new ClientRegistrationRequest(
             "invalid-email",
             "Password123!"
         );
 
-        ResponseEntity<String> invalidEmailResponse = restTemplate.exchange(
-            "/api/clients/register",
-            HttpMethod.POST,
-            new HttpEntity<>(invalidEmailRequest, headers),
-            String.class
-        );
+        try {
+            restTemplate.exchange(
+                "/api/clients/register",
+                HttpMethod.POST,
+                new HttpEntity<>(invalidEmailRequest, headers),
+                String.class
+            );
+            fail("Expected exception was not thrown");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
 
-        assertEquals(HttpStatus.BAD_REQUEST, invalidEmailResponse.getStatusCode());
-
-        // 2. Test registration with short password
+        // Test registration with short password
         ClientRegistrationRequest shortPasswordRequest = new ClientRegistrationRequest(
             "test@example.com",
             "short"
         );
 
-        ResponseEntity<String> shortPasswordResponse = restTemplate.exchange(
-            "/api/clients/register",
-            HttpMethod.POST,
-            new HttpEntity<>(shortPasswordRequest, headers),
-            String.class
-        );
-
-        assertEquals(HttpStatus.BAD_REQUEST, shortPasswordResponse.getStatusCode());
+        try {
+            restTemplate.exchange(
+                "/api/clients/register",
+                HttpMethod.POST,
+                new HttpEntity<>(shortPasswordRequest, headers),
+                String.class
+            );
+            fail("Expected exception was not thrown");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
     }
 }
