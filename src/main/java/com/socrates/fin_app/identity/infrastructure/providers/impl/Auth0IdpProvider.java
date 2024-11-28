@@ -3,6 +3,7 @@ package com.socrates.fin_app.identity.infrastructure.providers.impl;
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.CreatedUser;
+import com.auth0.json.auth.TokenHolder;
 import com.auth0.net.Request;
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
@@ -39,6 +40,25 @@ public class Auth0IdpProvider implements IdpProvider {
             
         } catch (Auth0Exception e) {
             throw new AuthenticationException("Failed to create user account: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String authenticateUser(String email, String password) {
+        try {
+            TokenHolder holder = auth0Client.login(email, password)
+                .setRealm(connection)
+                .execute()
+                .getBody();
+
+            if (holder == null || holder.getIdToken() == null) {
+                throw new AuthenticationException("Failed to authenticate user");
+            }
+
+            return holder.getIdToken();
+            
+        } catch (Auth0Exception e) {
+            throw new AuthenticationException("Authentication failed: " + e.getMessage(), e);
         }
     }
 }

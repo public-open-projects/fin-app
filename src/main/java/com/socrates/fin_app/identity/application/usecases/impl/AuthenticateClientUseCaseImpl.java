@@ -13,31 +13,24 @@ import org.springframework.stereotype.Service;
 public class AuthenticateClientUseCaseImpl implements AuthenticateClientUseCase {
 
     private final ClientRepository clientRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final TokenProvider tokenProvider;
+    private final IdpProvider idpProvider;
     
     public AuthenticateClientUseCaseImpl(
             ClientRepository clientRepository,
-            PasswordEncoder passwordEncoder,
-            TokenProvider tokenProvider) {
+            IdpProvider idpProvider) {
         this.clientRepository = clientRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.tokenProvider = tokenProvider;
+        this.idpProvider = idpProvider;
     }
     
     @Override
     public AuthenticationResponse execute(LoginRequest request) {
-        // Find client by email
-        var client = clientRepository.findByEmail(request.email())
-            .orElseThrow(() -> new AuthenticationException("Invalid credentials"));
-            
-        // Verify password
-        if (!passwordEncoder.matches(request.password(), client.getPassword())) {
+        // Verify user exists in our database
+        if (!clientRepository.existsByEmail(request.email())) {
             throw new AuthenticationException("Invalid credentials");
         }
         
-        // Generate token
-        String token = tokenProvider.createToken(client.getEmail(), "CLIENT");
+        // Authenticate with Auth0 and get JWT token
+        String token = idpProvider.authenticateUser(request.email(), request.password());
         
         return new AuthenticationResponse(
             token,

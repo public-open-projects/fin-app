@@ -11,4 +11,10 @@ public class JwtIdpProvider implements IdpProvider {
         // For testing, just simulate account creation
         // No actual JWT operations needed
     }
+
+    @Override
+    public String authenticateUser(String email, String password) {
+        // For testing, return a dummy token
+        return "test.jwt.token";
+    }
 }
