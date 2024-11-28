@@ -73,7 +73,9 @@ class IdentityFunctionalTest {
         // 1. Register new client
         ClientRegistrationRequest registrationRequest = new ClientRegistrationRequest(
             "test@example.com",
-            "Password123!"
+            "Password123!",
+            "John",
+            "Doe"
         );
 
         ResponseEntity<RegistrationResponse> registrationResponse = restTemplate.exchange(
