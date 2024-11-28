@@ -5,6 +5,7 @@ import com.socrates.fin_app.identity.application.dto.request.*;
 import com.socrates.fin_app.identity.application.dto.response.*;
 import com.socrates.fin_app.identity.domain.entities.*;
 import com.socrates.fin_app.identity.domain.repositories.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,6 @@ class IdentityFunctionalTest {
         // Configure RestTemplate with proper error handling
         restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
             protected boolean hasError(HttpStatus statusCode) {
                 return statusCode.series() == HttpStatus.Series.SERVER_ERROR;
             }
