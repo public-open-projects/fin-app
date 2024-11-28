@@ -182,4 +182,59 @@ class ClientControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isNotFound());
     }
+
+    @Test
+    @WithMockUser
+    void whenUpdateProfileWithInvalidId_thenReturns404() throws Exception {
+        // Given
+        String clientId = "non-existent-id";
+        UpdateProfileRequest request = new UpdateProfileRequest(
+            "test@example.com", "John", "Doe", "1234567890"
+        );
+        
+        when(updateClientProfileUseCase.execute(eq(clientId), any(UpdateProfileRequest.class)))
+            .thenThrow(new UserNotFoundException("Client not found"));
+
+        // When & Then
+        mockMvc.perform(put("/api/clients/" + clientId + "/profile")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Client not found"));
+    }
+
+    @Test
+    @WithMockUser
+    void whenUpdateProfileWithInvalidData_thenReturns400() throws Exception {
+        // Given
+        String clientId = "test-id";
+        UpdateProfileRequest request = new UpdateProfileRequest(
+            "invalid-email", "", "", ""  // Invalid email and empty names
+        );
+
+        // When & Then
+        mockMvc.perform(put("/api/clients/" + clientId + "/profile")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    void whenServerError_thenReturns500() throws Exception {
+        // Given
+        ClientRegistrationRequest request = new ClientRegistrationRequest(
+            "test@example.com", "password123", "John", "Doe"
+        );
+        
+        when(registerClientUseCase.execute(any(ClientRegistrationRequest.class)))
+            .thenThrow(new RuntimeException("Unexpected error"));
+
+        // When & Then
+        mockMvc.perform(post("/api/clients/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string("An unexpected error occurred"));
+    }
 }
