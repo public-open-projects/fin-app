@@ -23,9 +23,17 @@ public class AuthenticateClientUseCaseImpl implements AuthenticateClientUseCase 
     
     @Override
     public AuthenticationResponse execute(LoginRequest request) {
+        // First verify the client exists in our database
+        if (!clientRepository.existsByEmail(request.email())) {
+            throw new AuthenticationException("Invalid credentials");
+        }
+
         try {
-            // Authenticate with Auth0 and get JWT token
+            // Authenticate with IDP and get JWT token
             String token = idpProvider.authenticateUser(request.email(), request.password());
+            if (token == null || token.isEmpty()) {
+                throw new AuthenticationException("Invalid credentials");
+            }
             
             return new AuthenticationResponse(
                 token,
