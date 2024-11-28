@@ -47,17 +47,15 @@ class IdentityFunctionalTest {
 
     @BeforeEach
     void setUp() {
-        // Create a new RestTemplate with basic auth
-        restTemplate = restTemplate.withBasicAuth("test", "test");
-        
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBasicAuth("test", "test"); // Add basic auth to headers
-        
-        // Clear repositories
+        // Clear repositories first
         clientRepository.deleteAll();
         adminRepository.deleteAll();
         bankerRepository.deleteAll();
+        
+        // Configure headers
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBasicAuth("test", "test");
         
         // Configure RestTemplate
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -68,7 +66,7 @@ class IdentityFunctionalTest {
         restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
             @Override
             public boolean hasError(int statusCode) {
-                // Only treat 5xx errors as errors
+                // Don't treat 4xx as errors since we want to test them
                 return statusCode >= 500;
             }
         });

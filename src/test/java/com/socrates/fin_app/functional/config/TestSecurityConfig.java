@@ -29,9 +29,22 @@ public class TestSecurityConfig {
                 .requestMatchers("/api/bankers/login").permitAll()
                 // All other endpoints require authentication
                 .anyRequest().authenticated())
-            .httpBasic(Customizer.withDefaults())
+            .httpBasic(basic -> basic
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
+                }))
             .formLogin(form -> form.disable());
             
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails testUser = User.withDefaultPasswordEncoder()
+            .username("test")
+            .password("test")
+            .roles("USER")
+            .build();
+        return new InMemoryUserDetailsManager(testUser);
     }
 }
