@@ -60,8 +60,7 @@ class RegisterClientUseCaseImplTest {
         String password = "password123";
         ClientRegistrationRequest request = new ClientRegistrationRequest(email, password);
         
-        when(clientRepository.save(any(ClientProfile.class)))
-            .thenThrow(new DataIntegrityViolationException("Duplicate email"));
+        when(clientRepository.existsByEmail(email)).thenReturn(true);
 
         // When & Then
         Exception exception = assertThrows(IllegalStateException.class, 
