@@ -14,6 +14,9 @@ public class Client {
     private String id;
     private String email;
     private String password;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
     
     protected Client() {
         // JPA
@@ -23,6 +26,13 @@ public class Client {
         this.id = UUID.randomUUID().toString();
         this.email = email;
         this.password = password;
+    }
+
+    public void updateProfile(String email, String firstName, String lastName, String phoneNumber) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getId() {
@@ -35,5 +45,17 @@ public class Client {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 }
