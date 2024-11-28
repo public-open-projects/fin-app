@@ -104,7 +104,7 @@ class IdentityFunctionalTest {
         ResponseEntity<AuthenticationResponse> loginResponse = restTemplate.exchange(
             "/api/clients/login",
             HttpMethod.POST,
-            new HttpEntity<>(loginRequest, registrationHeaders),
+            new HttpEntity<>(loginRequest, headers),
             AuthenticationResponse.class
         );
 
@@ -143,7 +143,7 @@ class IdentityFunctionalTest {
         ResponseEntity<PasswordRecoveryResponse> recoveryResponse = restTemplate.exchange(
             "/api/clients/forgot-password",
             HttpMethod.POST,
-            new HttpEntity<>(forgotRequest, registrationHeaders),
+            new HttpEntity<>(forgotRequest, headers),
             PasswordRecoveryResponse.class
         );
 
