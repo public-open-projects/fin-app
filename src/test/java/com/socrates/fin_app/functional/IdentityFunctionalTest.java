@@ -81,10 +81,14 @@ class IdentityFunctionalTest {
             "Password123!"
         );
 
+        HttpHeaders registrationHeaders = new HttpHeaders();
+        registrationHeaders.setContentType(MediaType.APPLICATION_JSON);
+        registrationHeaders.setBasicAuth("test", "test");
+
         ResponseEntity<RegistrationResponse> registrationResponse = restTemplate.exchange(
             "/api/clients/register",
             HttpMethod.POST,
-            new HttpEntity<>(registrationRequest, headers),
+            new HttpEntity<>(registrationRequest, registrationHeaders),
             RegistrationResponse.class
         );
 
@@ -101,7 +105,7 @@ class IdentityFunctionalTest {
         ResponseEntity<AuthenticationResponse> loginResponse = restTemplate.exchange(
             "/api/clients/login",
             HttpMethod.POST,
-            new HttpEntity<>(loginRequest, headers),
+            new HttpEntity<>(loginRequest, registrationHeaders),
             AuthenticationResponse.class
         );
 
@@ -109,8 +113,10 @@ class IdentityFunctionalTest {
         assertNotNull(loginResponse.getBody());
         assertNotNull(loginResponse.getBody().token());
 
-        // Add token to headers for authenticated requests
-        headers.setBearerAuth(loginResponse.getBody().token());
+        // Create new headers with JWT token for authenticated requests
+        HttpHeaders authHeaders = new HttpHeaders();
+        authHeaders.setContentType(MediaType.APPLICATION_JSON);
+        authHeaders.setBearerAuth(loginResponse.getBody().token());
 
         // 3. Update profile
         UpdateProfileRequest updateRequest = new UpdateProfileRequest(
@@ -123,14 +129,14 @@ class IdentityFunctionalTest {
         ResponseEntity<ProfileResponse> updateResponse = restTemplate.exchange(
             "/api/clients/" + registrationResponse.getBody().id() + "/profile",
             HttpMethod.PUT,
-            new HttpEntity<>(updateRequest, headers),
+            new HttpEntity<>(updateRequest, authHeaders),
             ProfileResponse.class
         );
 
         assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
         assertEquals("John", updateResponse.getBody().firstName());
 
-        // 4. Test password recovery flow
+        // 4. Test password recovery flow (public endpoint)
         ForgotPasswordRequest forgotRequest = new ForgotPasswordRequest(
             "test@example.com"
         );
@@ -138,7 +144,7 @@ class IdentityFunctionalTest {
         ResponseEntity<PasswordRecoveryResponse> recoveryResponse = restTemplate.exchange(
             "/api/clients/forgot-password",
             HttpMethod.POST,
-            new HttpEntity<>(forgotRequest, headers),
+            new HttpEntity<>(forgotRequest, registrationHeaders),
             PasswordRecoveryResponse.class
         );
 
