@@ -32,7 +32,7 @@ public class Auth0IdpProvider implements IdpProvider {
                 connection
             );
             
-            CreatedUser user = request.execute();
+            CreatedUser user = request.execute().getBody();
             if (user == null || user.getEmail() == null) {
                 throw new AuthenticationException("Failed to create user account");
             }
