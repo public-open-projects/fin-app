@@ -61,7 +61,8 @@ class IdentityFunctionalTest {
         restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
             protected boolean hasError(HttpStatus statusCode) {
-                return statusCode.series() == HttpStatus.Series.SERVER_ERROR;
+                // Only treat 5xx errors as errors, let the test handle 4xx
+                return statusCode.is5xxServerError();
             }
         });
     }
@@ -123,8 +124,9 @@ class IdentityFunctionalTest {
             Thread.currentThread().interrupt();
         }
 
+        String updateUrl = String.format("/api/clients/%s/profile", clientId);
         ResponseEntity<ProfileResponse> updateResponse = restTemplate.exchange(
-            "/api/clients/" + clientId + "/profile",
+            updateUrl,
             HttpMethod.PUT,
             new HttpEntity<>(updateRequest, authHeaders),
             ProfileResponse.class
@@ -221,18 +223,14 @@ class IdentityFunctionalTest {
         );
         assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
-        try {
-            // Second registration should fail
-            restTemplate.exchange(
-                "/api/clients/register",
-                HttpMethod.POST,
-                new HttpEntity<>(duplicateRequest, headers),
-                String.class
-            );
-            fail("Expected exception was not thrown");
-        } catch (HttpClientErrorException e) {
-            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-        }
+        // Second registration should fail with 400 Bad Request
+        ResponseEntity<String> duplicateResponse = restTemplate.exchange(
+            "/api/clients/register",
+            HttpMethod.POST,
+            new HttpEntity<>(duplicateRequest, headers),
+            String.class
+        );
+        assertEquals(HttpStatus.BAD_REQUEST, duplicateResponse.getStatusCode());
 
         // Test login with invalid credentials
         LoginRequest invalidLogin = new LoginRequest(
