@@ -33,12 +33,12 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
     @Override
     @Transactional
     public RegistrationResponse execute(ClientRegistrationRequest request) {
+        // Validate email format first, outside the try-catch
+        if (!isValidEmail(request.email())) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+        
         try {
-            // Validate email format
-            if (!isValidEmail(request.email())) {
-                throw new IllegalArgumentException("Invalid email format");
-            }
-            
             // Check if email already exists
             if (clientRepository.existsByEmail(request.email())) {
                 logger.warn("Registration attempt with existing email: {}", request.email());
