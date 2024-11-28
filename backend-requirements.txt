@@ -1,0 +1,156 @@
+
+Back End:
+
+Identity Service:
+On Register New Client Account, use POST /api/clients/register to call registerClient method of Identity Service, which executes client registration by passing the registration request data. It calls the IDP Provider to create a new client account, validates the data, and returns a success response with the newly created client details.
+
+On Register New Client Account, use POST /api/clients/register to call registerClient method of Identity Service, which attempts to execute client registration but encounters validation errors in the request data. It returns an error response detailing the validation issues without calling the IDP Provider.
+
+On Client Login, use POST /api/clients/login to call authenticateClient method of Identity Service, which executes client authentication by passing the login credentials. It calls the IDP Provider to verify credentials and returns a success response with an authentication token upon successful verification.
+
+On Client Login, use POST /api/clients/login to call authenticateClient method of Identity Service, which attempts authentication with invalid credentials. It returns an error response indicating authentication failure without generating a token.
+
+On Forgot Password Recovery, use POST /api/clients/forgot-password to call initiatePasswordRecovery method of Identity Service, which initiates password recovery by passing the client's email address. It calls the Notifications and Alerts service to send a password reset email and returns a success response indicating that the recovery email has been sent.
+
+On Forgot Password Recovery, use POST /api/clients/forgot-password to call initiatePasswordRecovery method of Identity Service, which attempts recovery with an unregistered email. It returns an error response indicating that the email is not recognized, without calling the Notifications and Alerts service.
+
+On Update Client Profile, use PUT /api/clients/{clientId}/profile to call updateClientProfile method of Identity Service, which updates the client profile by passing the client ID and new profile data. It validates the data, updates the client entity in the repository, and returns a success response with the updated client details.
+
+On Update Client Profile, use PUT /api/clients/{clientId}/profile to call updateClientProfile method of Identity Service, which encounters validation errors in the provided data. It returns an error response indicating the issues without updating the repository.
+
+On Banker Login, use POST /api/bankers/login to call authenticateBanker method of Identity Service, which authenticates the banker by passing login credentials. It calls the IDP Provider to verify credentials and returns an authentication token upon success.
+
+On Banker Login, use POST /api/bankers/login to call authenticateBanker method of Identity Service, which fails authentication due to invalid credentials. It returns an error response indicating authentication failure.
+
+On Admin Login, use POST /api/admins/login to call authenticateAdmin method of Identity Service, which authenticates the admin by passing login credentials. It calls the IDP Provider to verify credentials and returns an authentication token upon success.
+
+On Admin Login, use POST /api/admins/login to call authenticateAdmin method of Identity Service, which fails authentication due to invalid credentials. It returns an error response indicating authentication failure.
+
+Purchase Order Financing Application:
+On Initiate Financing Application, use POST /api/applications/initiate to call initiateApplication method of Purchase Order Financing Application service, which creates a new financing application by passing the client ID. It verifies client eligibility, creates a new application entity in the repository, and returns a success response with the application ID.
+
+On Initiate Financing Application, use POST /api/applications/initiate to call initiateApplication method of Purchase Order Financing Application service, which detects the client is ineligible due to existing obligations. It returns an error response indicating ineligibility without creating a new application.
+
+On Fill Out Application Form, use PUT /api/applications/{applicationId}/form to call updateApplicationForm method of Purchase Order Financing Application service, which updates the application form by passing the application ID and form data. It validates the data, updates the application entity, and returns a success response.
+
+On Fill Out Application Form, use PUT /api/applications/{applicationId}/form to call updateApplicationForm method, which encounters validation errors in the form data. It returns an error response detailing the issues without updating the application entity.
+
+On Upload Supporting Documents, use POST /api/applications/{applicationId}/documents to call uploadDocuments method of Purchase Order Financing Application service, which uploads documents by passing the application ID and document files. It stores the documents in the repository and returns a success response confirming the upload.
+
+On Upload Supporting Documents, use POST /api/applications/{applicationId}/documents to call uploadDocuments method, which detects unsupported file formats or sizes. It returns an error response indicating the acceptable formats and sizes without storing the documents.
+
+On Save Application Progress, use PUT /api/applications/{applicationId}/save to call saveApplicationProgress method of Purchase Order Financing Application service, which saves the current state of the application by passing the application ID. It updates the application entity in the repository and returns a success response.
+
+On Save Application Progress, use PUT /api/applications/{applicationId}/save to call saveApplicationProgress method, which encounters a network error. It returns an error response indicating the failure to save progress.
+
+On Submit Application, use POST /api/applications/{applicationId}/submit to call submitApplication method of Purchase Order Financing Application service, which submits the application by passing the application ID. It verifies completeness, updates the application status, and returns a success response initiating the eligibility assessment.
+
+On Submit Application, use POST /api/applications/{applicationId}/submit to call submitApplication method, which detects missing required fields or documents. It returns an error response indicating the incomplete sections without changing the application status.
+
+Real-Time Eligibility Assessment:
+On Automated Eligibility Check, use GET /api/assessments/{applicationId} to call performEligibilityCheck method of Real-Time Eligibility Assessment service, which performs eligibility assessment by passing the application ID. It calls the AIEngine Provider to analyze the application data, updates the assessment results in the repository, and returns a success response with the eligibility status.
+
+On Automated Eligibility Check, use GET /api/assessments/{applicationId} to call performEligibilityCheck method, which encounters risk flags during analysis. It updates the assessment status to require manual review and returns a response indicating the need for further evaluation.
+
+On Receive Immediate Feedback, use GET /api/assessments/{applicationId}/results to call getAssessmentResults method of Real-Time Eligibility Assessment service, which retrieves assessment results by passing the application ID. It returns a success response with the eligibility status and next steps.
+
+On Receive Immediate Feedback, use GET /api/assessments/{applicationId}/results to call getAssessmentResults method, which detects that assessment is incomplete due to system errors. It returns an error response indicating the delay and expected completion time.
+
+On Provide Additional Information, use PUT /api/applications/{applicationId}/additional-info to call submitAdditionalInfo method of Real-Time Eligibility Assessment service, which accepts additional information by passing the application ID and data. It updates the application entity, triggers reassessment, and returns a success response.
+
+On Provide Additional Information, use PUT /api/applications/{applicationId}/additional-info to call submitAdditionalInfo method, which detects missing or invalid data. It returns an error response prompting the client to provide the required information.
+
+Digital Agreements and E-Signature:
+On Generate Digital Agreement, use POST /api/agreements/{applicationId}/generate to call generateAgreement method of Digital Agreements and E-Signature service, which generates the agreement document by passing the application ID. It calls the Document Generation Provider, stores the agreement in the repository, and returns a success response with access details.
+
+On Generate Digital Agreement, use POST /api/agreements/{applicationId}/generate to call generateAgreement method, which encounters a system error. It returns an error response indicating the failure and notifies support staff.
+
+On Review Agreement, use GET /api/agreements/{agreementId} to call getAgreement method of Digital Agreements and E-Signature service, which retrieves the agreement document by passing the agreement ID. It returns a success response with the agreement content for client review.
+
+On Review Agreement, use GET /api/agreements/{agreementId} to call getAgreement method, which detects unauthorized access or missing agreement. It returns an error response indicating access issues or missing document.
+
+On Sign Agreement Electronically, use POST /api/agreements/{agreementId}/sign to call signAgreement method of Digital Agreements and E-Signature service, which initiates the e-signature process by passing the agreement ID. It calls the E-Signature Provider, updates the agreement status, and returns a success response confirming the signature.
+
+On Sign Agreement Electronically, use POST /api/agreements/{agreementId}/sign to call signAgreement method, which encounters technical issues with the e-signature service. It returns an error response with troubleshooting steps.
+
+On Confirmation of Agreement Execution, use GET /api/agreements/{agreementId}/status to call getAgreementStatus method of Digital Agreements and E-Signature service, which checks the agreement status by passing the agreement ID. It returns a success response confirming execution and provides a copy of the signed document.
+
+On Confirmation of Agreement Execution, use GET /api/agreements/{agreementId}/status to call getAgreementStatus method, which detects that the signature was not recorded due to a glitch. It returns an error response and guides the client to retry the signing process.
+
+Account Management:
+On Monitor Repayment Schedule, use GET /api/accounts/{clientId}/repayment-schedule to call getRepaymentSchedule method of Account Management service, which retrieves the repayment schedule by passing the client ID. It fetches data from the repository and returns a success response with upcoming repayment dates and amounts.
+
+On Monitor Repayment Schedule, use GET /api/accounts/{clientId}/repayment-schedule to call getRepaymentSchedule method, which encounters a system error retrieving data. It returns an error response indicating the issue and expected resolution time.
+
+On View Transaction History, use GET /api/accounts/{clientId}/transactions to call getTransactionHistory method of Account Management service, which retrieves transaction history by passing the client ID. It fetches data from the repository and returns a success response with transaction details.
+
+On View Transaction History, use GET /api/accounts/{clientId}/transactions to call getTransactionHistory method, which experiences slow performance due to large data volume. It returns a response with suggestions to apply filters or pagination.
+
+On Manage Account Settings, use PUT /api/accounts/{clientId}/settings to call updateAccountSettings method of Account Management service, which updates account settings by passing the client ID and new settings data. It validates the data, updates the repository, and returns a success response confirming the changes.
+
+On Manage Account Settings, use PUT /api/accounts/{clientId}/settings to call updateAccountSettings method, which detects that the new email is already in use. It returns an error response indicating the conflict without updating the settings.
+
+On Export Account Data, use GET /api/accounts/{clientId}/export to call exportAccountData method of Account Management service, which generates an export file by passing the client ID. It compiles the data, creates a downloadable file, and returns a success response with the file link.
+
+On Export Account Data, use GET /api/accounts/{clientId}/export to call exportAccountData method, which fails due to system maintenance. It returns an error response indicating the maintenance window and suggests trying again later.
+
+Supplier Management:
+On Add Supplier Details, use POST /api/clients/{clientId}/suppliers to call addSupplier method of Supplier Management service, which adds supplier details by passing the client ID and supplier data. It validates and stores the supplier entity in the repository, returning a success response.
+
+On Add Supplier Details, use POST /api/clients/{clientId}/suppliers to call addSupplier method, which encounters validation errors in the supplier data. It returns an error response detailing the issues without storing the supplier.
+
+On Verify Supplier Information, use POST /api/suppliers/{supplierId}/verify to call verifySupplier method of Supplier Management service, which verifies supplier information by passing the supplier ID. It calls external verification providers, updates the supplier status, and returns a success response confirming validity.
+
+On Verify Supplier Information, use POST /api/suppliers/{supplierId}/verify to call verifySupplier method, which detects discrepancies during verification. It returns an error response with reasons and instructions for resolution.
+
+On Notify Suppliers of Payment, use POST /api/payments/{paymentId}/notify-supplier to call notifySupplierOfPayment method of Supplier Management service, which notifies the supplier by passing the payment ID. It calls the Notifications and Alerts service to send payment details to the supplier and returns a success response.
+
+On Notify Suppliers of Payment, use POST /api/payments/{paymentId}/notify-supplier to call notifySupplierOfPayment method, which fails due to incorrect supplier contact details. It returns an error response prompting the client to update the supplier's information.
+
+Notifications and Alerts:
+On Receive Repayment Reminders, use POST /api/notifications/repayment-reminder to call sendRepaymentReminder method of Notifications and Alerts service, which schedules and sends repayment reminders based on client preferences. It calls the Notification Provider to deliver the message and returns a success response.
+
+On Receive Repayment Reminders, use POST /api/notifications/repayment-reminder to call sendRepaymentReminder method, which respects the client's disabled notification settings. It does not send the reminder but logs the event.
+
+On Alerts for Document Expiry, use POST /api/notifications/document-expiry to call sendDocumentExpiryAlert method of Notifications and Alerts service, which sends alerts for documents nearing expiry. It identifies affected clients, calls the Notification Provider, and returns a success response.
+
+On Alerts for Document Expiry, use POST /api/notifications/document-expiry to call sendDocumentExpiryAlert method, which fails to send alerts due to system errors. It returns an error response and schedules a retry.
+
+AI-Driven Insights and Recommendations:
+On Analyze Transaction History, use GET /api/insights/{clientId} to call generateInsights method of AI-Driven Insights and Recommendations service, which analyzes transaction history by passing the client ID. It calls the AIEngine Provider, processes data, and returns a success response with personalized insights.
+
+On Analyze Transaction History, use GET /api/insights/{clientId} to call generateInsights method, which detects insufficient data for analysis. It returns an error response indicating the need for more data.
+
+On Present Recommendations to Client, use GET /api/recommendations/{clientId} to call getRecommendations method of AI-Driven Insights and Recommendations service, which retrieves product recommendations by passing the client ID. It returns a success response with tailored suggestions.
+
+On Present Recommendations to Client, use GET /api/recommendations/{clientId} to call getRecommendations method, which finds no suitable recommendations. It returns a response informing the client and assuring future updates.
+
+Support and Assistance:
+On Access Help Resources, use GET /api/help/resources to call getHelpResources method of Support and Assistance service, which retrieves help resources. It returns a success response with FAQs, guides, and contact options.
+
+On Access Help Resources, use GET /api/help/resources to call getHelpResources method, which fails due to temporary unavailability. It returns an error response acknowledging the issue and provides alternative support contact details.
+
+On Contact Support Team, use POST /api/support/tickets to call createSupportTicket method of Support and Assistance service, which creates a support ticket by passing the client's issue details. It stores the ticket in the repository and returns a success response with ticket information.
+
+On Contact Support Team, use POST /api/support/tickets to call createSupportTicket method, which experiences high support volume. It returns a response informing the client of expected wait time and offers self-help resources.
+
+On Issue Resolution Tracking, use GET /api/support/tickets/{ticketId} to call getTicketStatus method of Support and Assistance service, which retrieves the status of a support ticket by passing the ticket ID. It returns a success response with current progress and updates.
+
+On Issue Resolution Tracking, use GET /api/support/tickets/{ticketId} to call getTicketStatus method, which detects that the ticket is improperly closed. It allows the client to request further assistance or confirm resolution.
+
+Chat Client:
+On Access Chat Client, use GET /api/chat to call initializeChat method of Chat Client service, which initializes the chat interface. It returns a success response rendering the chat client visible at all times within the dashboard.
+
+On Access Chat Client, use GET /api/chat to call initializeChat method, which fails due to a display error. It returns an error response notifying the user and attempts to reload the chat client.
+
+On Use Chat Client to Navigate Features, use POST /api/chat/command to call processChatCommand method of Chat Client service, which processes user commands passed through the chat client. It interprets the command, initiates the requested feature, and returns a success response guiding the user.
+
+On Use Chat Client to Navigate Features, use POST /api/chat/command to call processChatCommand method, which encounters an unrecognized command. It returns a response providing helpful suggestions or asking for clarification.
+
+On Receive Assistance via Chat Client, use POST /api/chat/message to call provideAssistance method of Chat Client service, which responds to user inquiries passed through the chat client. It utilizes automated responses or connects to a support agent, returning a success response with assistance.
+
+On Receive Assistance via Chat Client, use POST /api/chat/message to call provideAssistance method, which detects that live support is unavailable during off-hours. It returns a response informing the user and offers self-help resources.
+
+On Perform Transactions via Chat Client, use POST /api/chat/transaction to call executeTransaction method of Chat Client service, which facilitates transactions initiated through the chat client. It processes the request, interacts with relevant services, and returns a success response guiding the user through the process.
+
+On Perform Transactions via Chat Client, use POST /api/chat/transaction to call executeTransaction method, which identifies an unsupported transaction type. It returns a response informing the user and directing them to the appropriate feature on the dashboard.
