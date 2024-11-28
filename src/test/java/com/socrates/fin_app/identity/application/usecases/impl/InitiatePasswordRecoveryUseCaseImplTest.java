@@ -2,6 +2,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.response.PasswordRecoveryResponse;
+import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import com.socrates.fin_app.identity.infrastructure.services.NotificationService;
