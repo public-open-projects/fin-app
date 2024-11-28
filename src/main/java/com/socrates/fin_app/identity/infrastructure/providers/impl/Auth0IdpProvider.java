@@ -26,6 +26,12 @@ public class Auth0IdpProvider implements IdpProvider {
 
     @Override
     public void createClientAccount(String email, String password) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
         try {
             Request<CreatedUser> request = auth0Client.signUp(
                 email,
@@ -45,6 +51,12 @@ public class Auth0IdpProvider implements IdpProvider {
 
     @Override
     public String authenticateUser(String email, String password) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
         try {
             TokenHolder holder = auth0Client.login(email, password)
                 .setRealm(connection)

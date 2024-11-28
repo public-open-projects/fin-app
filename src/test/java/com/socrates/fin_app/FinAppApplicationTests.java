@@ -8,8 +8,25 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class FinAppApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+        assertDoesNotThrow(() -> {
+            FinAppApplication.main(new String[]{"--spring.profiles.active=test"});
+        });
+    }
+
+    @Test
+    void applicationStartsWithDefaultProfile() {
+        assertDoesNotThrow(() -> {
+            FinAppApplication.main(new String[]{});
+        });
+    }
+
+    @Test
+    void applicationStartsWithCustomPort() {
+        assertDoesNotThrow(() -> {
+            FinAppApplication.main(new String[]{"--server.port=8081"});
+        });
+    }
 
 }

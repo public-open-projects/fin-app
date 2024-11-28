@@ -38,6 +38,34 @@ class Auth0IdpProviderTest {
     }
 
     @Test
+    void whenAuthenticatingWithNullEmail_thenThrowsException() {
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () ->
+            auth0IdpProvider.authenticateUser(null, "password123"));
+    }
+
+    @Test
+    void whenAuthenticatingWithNullPassword_thenThrowsException() {
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () ->
+            auth0IdpProvider.authenticateUser("test@example.com", null));
+    }
+
+    @Test
+    void whenCreatingAccountWithNullEmail_thenThrowsException() {
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () ->
+            auth0IdpProvider.createClientAccount(null, "password123"));
+    }
+
+    @Test
+    void whenCreatingAccountWithNullPassword_thenThrowsException() {
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () ->
+            auth0IdpProvider.createClientAccount("test@example.com", null));
+    }
+
+    @Test
     void whenAuthenticatingValidUser_thenSucceeds() throws Auth0Exception {
         // Given
         String email = "test@example.com";
