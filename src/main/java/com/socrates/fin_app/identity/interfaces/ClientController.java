@@ -97,7 +97,11 @@ public class ClientController {
     public ResponseEntity<ProfileResponse> updateProfile(
             @PathVariable String clientId,
             @Valid @RequestBody UpdateProfileRequest request) {
-        return ResponseEntity.ok(updateClientProfileUseCase.execute(clientId, request));
+        try {
+            return ResponseEntity.ok(updateClientProfileUseCase.execute(clientId, request));
+        } catch (UserNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        }
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
