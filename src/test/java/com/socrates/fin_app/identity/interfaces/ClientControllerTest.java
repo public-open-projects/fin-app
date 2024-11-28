@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
+import com.socrates.fin_app.identity.application.dto.request.UpdateProfileRequest;
 import com.socrates.fin_app.identity.application.dto.response.AuthenticationResponse;
 import com.socrates.fin_app.identity.application.dto.response.PasswordRecoveryResponse;
 import com.socrates.fin_app.identity.application.dto.response.RegistrationResponse;
@@ -25,6 +26,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,9 +44,10 @@ class ClientControllerTest {
     static class TestConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http.csrf().disable()
-                .authorizeRequests()
-                .anyRequest().permitAll();
+            http.csrf(csrf -> csrf.disable())
+                .authorizeRequests(auth -> auth
+                    .anyRequest().permitAll()
+                );
             return http.build();
         }
 
