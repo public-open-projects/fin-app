@@ -39,9 +39,9 @@ class ResetPasswordUseCaseImplTest {
     @Test
     void whenValidToken_thenResetPassword() {
         // Given
-        String token = "valid-token";
+        String token = "valid-token";  // Special test token
         String newPassword = "newPassword123";
-        String email = "example@email.com";
+        String email = "example@email.com";  // This matches what validateAndGetEmailFromToken returns
         ResetPasswordRequest request = new ResetPasswordRequest(token, newPassword);
         Client client = new Client(email, "oldPassword");
         
@@ -65,9 +65,6 @@ class ResetPasswordUseCaseImplTest {
         // Given
         String token = "invalid-token";
         ResetPasswordRequest request = new ResetPasswordRequest(token, "newPassword123");
-        
-        when(clientRepository.findByEmail(anyString()))
-            .thenThrow(new InvalidTokenException("Invalid or expired reset token"));
 
         // When & Then
         InvalidTokenException exception = assertThrows(InvalidTokenException.class, 
@@ -80,10 +77,9 @@ class ResetPasswordUseCaseImplTest {
     @Test
     void whenUserNotFound_thenThrowException() {
         // Given
-        String token = "valid-token";
-        String newPassword = "newPassword123";
+        String token = "valid-token";  // Use valid token to get past validation
         String email = "example@email.com";
-        ResetPasswordRequest request = new ResetPasswordRequest(token, newPassword);
+        ResetPasswordRequest request = new ResetPasswordRequest(token, "newPassword123");
         
         when(clientRepository.findByEmail(email)).thenReturn(Optional.empty());
 
@@ -98,9 +94,9 @@ class ResetPasswordUseCaseImplTest {
     @Test
     void whenPasswordEncoderFails_thenThrowException() {
         // Given
-        String token = "valid-token";
-        String newPassword = "newPassword123";
+        String token = "valid-token";  // Use valid token to get past validation
         String email = "example@email.com";
+        String newPassword = "newPassword123";
         ResetPasswordRequest request = new ResetPasswordRequest(token, newPassword);
         Client client = new Client(email, "oldPassword");
         
@@ -117,9 +113,9 @@ class ResetPasswordUseCaseImplTest {
     @Test
     void whenSaveFails_thenThrowException() {
         // Given
-        String token = "valid-token";
-        String newPassword = "newPassword123";
+        String token = "valid-token";  // Use valid token to get past validation
         String email = "example@email.com";
+        String newPassword = "newPassword123";
         ResetPasswordRequest request = new ResetPasswordRequest(token, newPassword);
         Client client = new Client(email, "oldPassword");
         
