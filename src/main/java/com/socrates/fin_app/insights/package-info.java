@@ -1,2 +1,2 @@
-@org.springframework.modulith.ApplicationModule
+@org.springframework.modulith.ApplicationModule(displayName = "Insights")
 package com.socrates.fin_app.insights;
