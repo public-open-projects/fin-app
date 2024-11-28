@@ -266,14 +266,18 @@ class IdentityFunctionalTest {
             "nonexistent@example.com"
         );
 
-        ResponseEntity<String> recoveryResponse = restTemplate.exchange(
-            "/api/clients/forgot-password",
-            HttpMethod.POST,
-            new HttpEntity<>(invalidRecovery, headers),
-            String.class
-        );
-        assertEquals(HttpStatus.NOT_FOUND, recoveryResponse.getStatusCode());
-        assertTrue(recoveryResponse.getBody().contains("Email not found"));
+        try {
+            restTemplate.exchange(
+                "/api/clients/forgot-password",
+                HttpMethod.POST,
+                new HttpEntity<>(invalidRecovery, headers),
+                String.class
+            );
+            fail("Expected HttpClientErrorException.NotFound to be thrown");
+        } catch (HttpClientErrorException.NotFound ex) {
+            assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+            assertTrue(ex.getResponseBodyAsString().contains("Email not found"));
+        }
 
         // 4. Test profile update without authentication
         UpdateProfileRequest updateRequest = new UpdateProfileRequest(
