@@ -3,6 +3,7 @@ package com.socrates.fin_app.identity.infrastructure.providers.impl;
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.CreatedUser;
+import com.auth0.net.Response;
 import com.auth0.net.SignUpRequest;
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,9 @@ class Auth0IdpProviderTest {
 
     @Mock
     private SignUpRequest signUpRequest;
+    
+    @Mock
+    private Response<CreatedUser> response;
 
     private Auth0IdpProvider auth0IdpProvider;
 
@@ -35,10 +39,12 @@ class Auth0IdpProviderTest {
     void whenCreatingValidAccount_thenSucceeds() throws Auth0Exception {
         // Given
         CreatedUser createdUser = new CreatedUser();
+        createdUser.setEmail("test@example.com");
         
         when(auth0Client.signUp(anyString(), anyString(), anyString()))
             .thenReturn(signUpRequest);
-        when(signUpRequest.execute()).thenReturn(createdUser);
+        when(signUpRequest.execute()).thenReturn(response);
+        when(response.getBody()).thenReturn(createdUser);
 
         // When & Then
         assertDoesNotThrow(() -> 
