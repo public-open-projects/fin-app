@@ -30,3 +30,21 @@ public class AdminProfile extends Profile {
         return role;
     }
 }
+package com.socrates.fin_app.identity.domain.entities;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "admin_profiles")
+public class AdminProfile extends Profile {
+    
+    protected AdminProfile() {
+        // JPA
+    }
+    
+    public AdminProfile(String email, String password) {
+        super(password, ProfileType.ADMIN);
+        setEmail(email);
+    }
+}
