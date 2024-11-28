@@ -148,7 +148,7 @@ class ClientControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isBadRequest())
-            .andExpect(content().string("Invalid email format"));
+            .andExpect(content().string("email: Invalid email format"));
     }
 
     @Test

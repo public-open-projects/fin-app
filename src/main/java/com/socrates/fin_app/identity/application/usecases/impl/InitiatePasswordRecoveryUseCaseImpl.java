@@ -3,6 +3,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.response.PasswordRecoveryResponse;
 import com.socrates.fin_app.identity.application.usecases.InitiatePasswordRecoveryUseCase;
+import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import com.socrates.fin_app.identity.infrastructure.services.NotificationService;
@@ -29,7 +30,7 @@ public class InitiatePasswordRecoveryUseCaseImpl implements InitiatePasswordReco
     public PasswordRecoveryResponse execute(ForgotPasswordRequest request) {
         // Check if email exists
         if (!clientRepository.existsByEmail(request.email())) {
-            throw new IllegalStateException("Email not found");
+            throw new UserNotFoundException("Email not found");
         }
         
         // Generate recovery token
