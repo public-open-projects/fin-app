@@ -35,7 +35,7 @@ class ClientRepositoryTest {
     @Test
     void whenExistsByEmail_thenReturnTrue() {
         // Given
-        Client client = new Client("test@example.com", "password123");
+        ClientProfile client = new ClientProfile("test@example.com", "password123");
         entityManager.persist(client);
         entityManager.flush();
 

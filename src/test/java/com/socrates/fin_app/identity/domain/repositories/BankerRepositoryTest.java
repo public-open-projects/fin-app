@@ -29,7 +29,7 @@ class BankerRepositoryTest {
     @Test
     void whenCheckingExistingEmail_thenReturnTrue() {
         // Given
-        Banker banker = new Banker("banker@example.com", "password123");
+        BankerProfile banker = new BankerProfile("banker@example.com", "password123");
         bankerRepository.save(banker);
 
         // When

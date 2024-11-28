@@ -107,7 +107,7 @@ class ResetPasswordUseCaseImplTest {
         RuntimeException exception = assertThrows(RuntimeException.class, 
             () -> resetPasswordUseCase.execute(request));
         assertEquals("Encoding failed", exception.getMessage());
-        verify(clientRepository, never()).save(any(Client.class));
+        verify(clientRepository, never()).save(any(ClientProfile.class));
     }
 
     @Test

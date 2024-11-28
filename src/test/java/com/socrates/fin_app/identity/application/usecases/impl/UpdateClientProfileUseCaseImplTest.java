@@ -43,7 +43,7 @@ class UpdateClientProfileUseCaseImplTest {
         
         when(clientRepository.findById(clientId)).thenReturn(Optional.of(existingClient));
         when(clientRepository.existsByEmail(email)).thenReturn(false);
-        when(clientRepository.save(any(Client.class))).thenReturn(existingClient);
+        when(clientRepository.save(any(ClientProfile.class))).thenReturn(existingClient);
 
         // When
         ProfileResponse response = updateClientProfileUseCase.execute(clientId, request);
@@ -79,7 +79,7 @@ class UpdateClientProfileUseCaseImplTest {
         // Given
         String clientId = "test-id";
         String newEmail = "existing@example.com";
-        Client existingClient = new Client("old@example.com", "password");
+        ClientProfile existingClient = new ClientProfile("old@example.com", "password");
         UpdateProfileRequest request = new UpdateProfileRequest(
             newEmail, "John", "Doe", "1234567890"
         );
