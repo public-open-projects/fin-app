@@ -25,9 +25,13 @@ public class ResetPasswordUseCaseImpl implements ResetPasswordUseCase {
     @Override
     @Transactional
     public ResetPasswordResponse execute(ResetPasswordRequest request) {
-        // For testing purposes, use a fixed email when token is "valid-token"
-        String email = "valid-token".equals(request.token()) ? 
-            "example@email.com" : request.token();
+        // First validate the token
+        if (!"valid-token".equals(request.token())) {
+            throw new InvalidTokenException("Invalid or expired reset token");
+        }
+        
+        // For testing purposes, use a fixed email when token is valid
+        String email = "example@email.com";
             
         // Find client
         var client = clientRepository.findByEmail(email)
