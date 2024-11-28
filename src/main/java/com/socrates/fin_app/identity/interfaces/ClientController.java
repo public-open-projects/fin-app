@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.socrates.fin_app.common.annotations.ApiController;
+import org.springframework.http.HttpStatus;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
