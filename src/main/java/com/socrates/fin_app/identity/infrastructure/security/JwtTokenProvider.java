@@ -10,8 +10,22 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider implements TokenProvider {
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long validityInMilliseconds = 3600000; // 1h
+    private final Key key;
+    private final long validityInMilliseconds;
+
+    public JwtTokenProvider() {
+        this(Keys.secretKeyFor(SignatureAlgorithm.HS256), 3600000); // 1h default
+    }
+
+    public JwtTokenProvider(String secret, long validityInMilliseconds) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.validityInMilliseconds = validityInMilliseconds;
+    }
+
+    public JwtTokenProvider(Key key, long validityInMilliseconds) {
+        this.key = key;
+        this.validityInMilliseconds = validityInMilliseconds;
+    }
 
     public String createToken(String username, String role) {
         Claims claims = Jwts.claims().setSubject(username);

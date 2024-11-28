@@ -26,21 +26,29 @@ public class TestSecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints that don't require authentication
-                .requestMatchers("/api/clients/register").permitAll()
-                .requestMatchers("/api/clients/login").permitAll()
-                .requestMatchers("/api/clients/forgot-password").permitAll()
-                .requestMatchers("/api/admins/login").permitAll()
-                .requestMatchers("/api/bankers/login").permitAll()
-                // All other endpoints require authentication
+                .requestMatchers("/api/clients/register", 
+                               "/api/clients/login",
+                               "/api/clients/forgot-password",
+                               "/api/admins/login",
+                               "/api/bankers/login").permitAll()
                 .anyRequest().authenticated())
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .httpBasic(basic -> basic
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
-                }))
-            .formLogin(form -> form.disable());
+                }));
             
         return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(tokenProvider());
+    }
+
+    @Bean
+    public TokenProvider tokenProvider() {
+        return new JwtTokenProvider("testSecretKeyThatIsLongEnoughForHS256Algorithm", 3600000L);
     }
 
     @Bean
@@ -51,5 +59,11 @@ public class TestSecurityConfig {
             .roles("USER")
             .build();
         return new InMemoryUserDetailsManager(testUser);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }
