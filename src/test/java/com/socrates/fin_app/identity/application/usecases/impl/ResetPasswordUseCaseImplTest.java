@@ -40,7 +40,7 @@ class ResetPasswordUseCaseImplTest {
         // Given
         String token = "valid-token";
         String newPassword = "newPassword123";
-        String email = "test@example.com";
+        String email = "example@email.com"; // Match the email from validateAndGetEmailFromToken
         ResetPasswordRequest request = new ResetPasswordRequest(token, newPassword);
         Client client = new Client(email, "oldPassword");
         
@@ -53,7 +53,7 @@ class ResetPasswordUseCaseImplTest {
 
         // Then
         assertNotNull(response);
-        assertEquals("Password reset successfully", response.message());
+        assertEquals("Password has been successfully reset", response.message());
         verify(clientRepository).save(any(Client.class));
     }
 

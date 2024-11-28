@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ClientController.class)
+@Import(TestSecurityConfig.class)
 class ClientControllerTest {
 
     @Autowired
@@ -45,6 +48,7 @@ class ClientControllerTest {
     private UpdateClientProfileUseCase updateClientProfileUseCase;
 
     @Test
+    @WithMockUser
     void whenValidRegistration_thenReturns200() throws Exception {
         // Given
         ClientRegistrationRequest request = new ClientRegistrationRequest(
@@ -67,6 +71,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @WithMockUser
     void whenValidLogin_thenReturns200() throws Exception {
         // Given
         LoginRequest request = new LoginRequest("test@example.com", "password123");
@@ -87,6 +92,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @WithMockUser
     void whenValidForgotPassword_thenReturns200() throws Exception {
         // Given
         ForgotPasswordRequest request = new ForgotPasswordRequest("test@example.com");
@@ -107,6 +113,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @WithMockUser
     void whenInvalidEmail_thenReturns400() throws Exception {
         // Given
         ClientRegistrationRequest request = new ClientRegistrationRequest(
