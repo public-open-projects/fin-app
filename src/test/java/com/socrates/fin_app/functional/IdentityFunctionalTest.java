@@ -204,23 +204,34 @@ class IdentityFunctionalTest {
             "Password123!"
         );
 
-        // First registration
-        restTemplate.exchange(
+        // First registration should succeed
+        ResponseEntity<RegistrationResponse> firstResponse = restTemplate.exchange(
             "/api/clients/register",
             HttpMethod.POST,
             new HttpEntity<>(duplicateRequest, headers),
             RegistrationResponse.class
         );
+        assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
-        // Second registration with same email
+        // Wait a moment to ensure the first registration is processed
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        // Second registration with same email should fail
         ResponseEntity<String> duplicateResponse = restTemplate.exchange(
             "/api/clients/register",
             HttpMethod.POST,
             new HttpEntity<>(duplicateRequest, headers),
             String.class
         );
-
+        
+        // Make sure we're getting the error response as String
         assertEquals(HttpStatus.BAD_REQUEST, duplicateResponse.getStatusCode());
+        assertTrue(duplicateResponse.getBody().contains("already registered") || 
+                   duplicateResponse.getBody().contains("already exists"));
 
         // 2. Test login with invalid credentials
         LoginRequest invalidLogin = new LoginRequest(
