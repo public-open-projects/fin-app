@@ -81,14 +81,13 @@ class IdentityFunctionalTest {
             "Password123!"
         );
 
-        HttpHeaders registrationHeaders = new HttpHeaders();
-        registrationHeaders.setContentType(MediaType.APPLICATION_JSON);
-        registrationHeaders.setBasicAuth("test", "test");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<RegistrationResponse> registrationResponse = restTemplate.exchange(
             "/api/clients/register",
             HttpMethod.POST,
-            new HttpEntity<>(registrationRequest, registrationHeaders),
+            new HttpEntity<>(registrationRequest, headers),
             RegistrationResponse.class
         );
 

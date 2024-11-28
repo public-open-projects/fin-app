@@ -35,12 +35,13 @@ public class TestSecurityConfig {
                                "/api/clients/login",
                                "/api/clients/forgot-password",
                                "/api/admins/login",
-                               "/api/bankers/login").permitAll()
+                               "/api/bankers/login",
+                               "/error").permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .httpBasic(basic -> basic
                 .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
+                    response.sendError(HttpStatus.UNAUTHORIZED.value(), authException.getMessage());
                 }));
             
         return http.build();
@@ -59,9 +60,9 @@ public class TestSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails testUser = User.withDefaultPasswordEncoder()
-            .username("test")
-            .password("test")
-            .roles("USER")
+            .username("test@example.com")  // Match the test email
+            .password("Password123!")      // Match the test password
+            .roles("CLIENT")              // Add appropriate role
             .build();
         return new InMemoryUserDetailsManager(testUser);
     }
