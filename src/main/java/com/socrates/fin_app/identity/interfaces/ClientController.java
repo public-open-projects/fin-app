@@ -1,5 +1,10 @@
 package com.socrates.fin_app.identity.interfaces;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.socrates.fin_app.common.annotations.ApiController;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
@@ -17,6 +22,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Client Identity", description = "Client identity management APIs")
 @ApiController
 @RequestMapping("/api/clients")
 public class ClientController {
@@ -36,16 +42,35 @@ public class ClientController {
         this.updateClientProfileUseCase = updateClientProfileUseCase;
     }
 
+    @Operation(summary = "Register new client", 
+              description = "Register a new client with email and password")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully registered"),
+        @ApiResponse(responseCode = "400", description = "Invalid input"),
+        @ApiResponse(responseCode = "409", description = "Email already exists")
+    })
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody ClientRegistrationRequest request) {
         return ResponseEntity.ok(registerClientUseCase.execute(request));
     }
 
+    @Operation(summary = "Client login", 
+              description = "Authenticate client with email and password")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully authenticated"),
+        @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authenticateClientUseCase.execute(request));
     }
 
+    @Operation(summary = "Initiate password recovery", 
+              description = "Send password recovery email to client")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Recovery email sent"),
+        @ApiResponse(responseCode = "404", description = "Email not found")
+    })
     @PostMapping("/forgot-password")
     public ResponseEntity<PasswordRecoveryResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         return ResponseEntity.ok(initiatePasswordRecoveryUseCase.execute(request));
