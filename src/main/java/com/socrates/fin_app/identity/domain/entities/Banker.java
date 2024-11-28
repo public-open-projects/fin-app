@@ -1,39 +1,32 @@
 package com.socrates.fin_app.identity.domain.entities;
 
-import com.socrates.fin_app.common.annotations.DomainEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.UUID;
 
-@DomainEntity
 @Entity
-@Table(name = "bankers")
-public class Banker {
-    @Id
-    private String id;
-    private String email;
-    private String password;
+@Table(name = "banker_profiles")
+public class BankerProfile extends Profile {
+    private String branch;
+    private String position;
     
-    protected Banker() {
+    protected BankerProfile() {
         // JPA
     }
     
-    public Banker(String email, String password) {
-        this.id = UUID.randomUUID().toString();
-        this.email = email;
-        this.password = password;
+    public BankerProfile(String password) {
+        super(password, ProfileType.BANKER);
     }
 
-    public String getId() {
-        return id;
+    public void updateProfile(String branch, String position) {
+        this.branch = branch;
+        this.position = position;
     }
 
-    public String getEmail() {
-        return email;
+    public String getBranch() {
+        return branch;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPosition() {
+        return position;
     }
 }
