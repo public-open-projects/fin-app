@@ -75,4 +75,19 @@ public class ClientController {
     public ResponseEntity<PasswordRecoveryResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         return ResponseEntity.ok(initiatePasswordRecoveryUseCase.execute(request));
     }
+
+    @PutMapping("/{clientId}/profile")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Update client profile", 
+              description = "Update client profile information")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Profile updated successfully"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "404", description = "Client not found")
+    })
+    public ResponseEntity<ProfileResponse> updateProfile(
+            @PathVariable String clientId,
+            @Valid @RequestBody UpdateProfileRequest request) {
+        return ResponseEntity.ok(updateClientProfileUseCase.execute(clientId, request));
+    }
 }

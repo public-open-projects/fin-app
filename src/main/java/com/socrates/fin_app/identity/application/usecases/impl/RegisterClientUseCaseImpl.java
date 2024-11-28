@@ -26,19 +26,17 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
     @Override
     @Transactional
     public RegistrationResponse execute(ClientRegistrationRequest request) {
-        // First check if email already exists
-        if (clientRepository.existsByEmail(request.email())) {
-            throw new IllegalStateException("Email already registered");
-        }
-        
         try {
+            // First check if email already exists
+            if (clientRepository.existsByEmail(request.email())) {
+                throw new IllegalStateException("Email already registered");
+            }
+            
             // Create account in IDP first
             idpProvider.createClientAccount(request.email(), request.password());
             
             // If IDP creation successful, create local client record
-            ClientProfile client = new ClientProfile(request.password());
-            client.setEmail(request.email());  // Set email first
-            client.updateProfile(null, null, null);  // Then update other profile fields
+            ClientProfile client = new ClientProfile(request.email(), request.password());
             ClientProfile savedClient = clientRepository.save(client);
             
             // Return success response
@@ -47,8 +45,10 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
                 savedClient.getEmail()
             );
             
+        } catch (IllegalStateException e) {
+            throw e; // Re-throw validation errors
         } catch (Exception e) {
-            // Handle other validation/processing errors
+            logger.error("Registration failed", e);
             throw new IllegalStateException("Registration failed: " + e.getMessage());
         }
     }

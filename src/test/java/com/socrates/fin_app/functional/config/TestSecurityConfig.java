@@ -31,7 +31,6 @@ public class TestSecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints that don't require authentication
                 .requestMatchers(
                     "/api/clients/register",
                     "/api/clients/login",
@@ -40,15 +39,15 @@ public class TestSecurityConfig {
                     "/api/bankers/login",
                     "/error"
                 ).permitAll()
-                // Protected endpoints that require authentication
-                .requestMatchers("/api/clients/**").hasRole("CLIENT")
-                .requestMatchers("/api/admins/**").hasRole("ADMIN")
-                .requestMatchers("/api/bankers/**").hasRole("BANKER")
+                .requestMatchers("/api/clients/**").hasAuthority("ROLE_CLIENT")
+                .requestMatchers("/api/admins/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/bankers/**").hasAuthority("ROLE_BANKER")
                 .anyRequest().authenticated())
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .httpBasic(basic -> basic
+            .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendError(HttpStatus.UNAUTHORIZED.value(), authException.getMessage());
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.getWriter().write("{\"error\":\"Unauthorized\"}");
                 }));
             
         return http.build();
