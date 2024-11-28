@@ -39,9 +39,9 @@ public class TestSecurityConfig {
                     "/api/bankers/login",
                     "/error"
                 ).permitAll()
-                .requestMatchers("/api/clients/**").hasAuthority("ROLE_CLIENT")
-                .requestMatchers("/api/admins/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/api/bankers/**").hasAuthority("ROLE_BANKER")
+                .requestMatchers("/api/clients/**").hasRole("CLIENT")
+                .requestMatchers("/api/admins/**").hasRole("ADMIN")
+                .requestMatchers("/api/bankers/**").hasRole("BANKER")
                 .anyRequest().authenticated())
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(ex -> ex
