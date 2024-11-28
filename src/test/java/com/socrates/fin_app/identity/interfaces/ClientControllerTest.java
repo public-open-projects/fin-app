@@ -72,7 +72,7 @@ class ClientControllerTest {
     void whenValidRegistration_thenReturns200() throws Exception {
         // Given
         ClientRegistrationRequest request = new ClientRegistrationRequest(
-            "test@example.com", "password123"
+            "test@example.com", "password123", "John", "Doe"
         );
         RegistrationResponse response = new RegistrationResponse(
             "test-id", "test@example.com"
@@ -137,7 +137,7 @@ class ClientControllerTest {
     void whenInvalidEmail_thenReturns400() throws Exception {
         // Given
         ClientRegistrationRequest request = new ClientRegistrationRequest(
-            "invalid-email", "password123"
+            "invalid-email", "password123", "John", "Doe"
         );
 
         // When & Then

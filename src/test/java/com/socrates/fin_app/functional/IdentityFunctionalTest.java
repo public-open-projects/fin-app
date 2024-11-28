@@ -213,7 +213,9 @@ class IdentityFunctionalTest {
         // Test registration with existing email
         ClientRegistrationRequest duplicateRequest = new ClientRegistrationRequest(
             "existing@example.com",
-            "Password123!"
+            "Password123!",
+            "John",
+            "Doe"
         );
 
         // First registration should succeed
@@ -289,7 +291,9 @@ class IdentityFunctionalTest {
         // Test registration with invalid email format
         ClientRegistrationRequest invalidEmailRequest = new ClientRegistrationRequest(
             "invalid-email",
-            "Password123!"
+            "Password123!",
+            "John",
+            "Doe"
         );
 
         try {

@@ -58,7 +58,7 @@ class RegisterClientUseCaseImplTest {
         // Given
         String email = "existing@example.com";
         String password = "password123";
-        ClientRegistrationRequest request = new ClientRegistrationRequest(email, password);
+        ClientRegistrationRequest request = new ClientRegistrationRequest(email, password, "John", "Doe");
         
         when(clientRepository.existsByEmail(email)).thenReturn(true);
 
@@ -73,7 +73,7 @@ class RegisterClientUseCaseImplTest {
         // Given
         String email = "test@example.com";
         String password = "password123";
-        ClientRegistrationRequest request = new ClientRegistrationRequest(email, password);
+        ClientRegistrationRequest request = new ClientRegistrationRequest(email, password, "John", "Doe");
         
         doThrow(new RuntimeException("IDP Error"))
             .when(idpProvider).createClientAccount(email, password);
