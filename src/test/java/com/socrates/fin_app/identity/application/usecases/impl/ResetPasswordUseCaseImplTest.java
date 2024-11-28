@@ -2,7 +2,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 
 import com.socrates.fin_app.identity.application.dto.request.ResetPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.response.ResetPasswordResponse;
-import com.socrates.fin_app.identity.domain.entities.Client;
+import com.socrates.fin_app.identity.domain.entities.ClientProfile;
 import com.socrates.fin_app.identity.domain.exceptions.InvalidTokenException;
 import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
@@ -43,11 +43,11 @@ class ResetPasswordUseCaseImplTest {
         String newPassword = "newPassword123";
         String email = "example@email.com";  // This matches what validateAndGetEmailFromToken returns
         ResetPasswordRequest request = new ResetPasswordRequest(token, newPassword);
-        Client client = new Client(email, "oldPassword");
+        ClientProfile client = new ClientProfile(email, "oldPassword");
         
         when(clientRepository.findByEmail(email)).thenReturn(Optional.of(client));
         when(passwordEncoder.encode(newPassword)).thenReturn("encodedPassword");
-        when(clientRepository.save(any(Client.class))).thenReturn(client);
+        when(clientRepository.save(any(ClientProfile.class))).thenReturn(client);
 
         // When
         ResetPasswordResponse response = resetPasswordUseCase.execute(request);
@@ -71,7 +71,7 @@ class ResetPasswordUseCaseImplTest {
             () -> resetPasswordUseCase.execute(request));
         assertEquals("Invalid or expired reset token", exception.getMessage());
         verify(passwordEncoder, never()).encode(anyString());
-        verify(clientRepository, never()).save(any(Client.class));
+        verify(clientRepository, never()).save(any(ClientProfile.class));
     }
 
     @Test
@@ -88,7 +88,7 @@ class ResetPasswordUseCaseImplTest {
             () -> resetPasswordUseCase.execute(request));
         assertEquals("User not found", exception.getMessage());
         verify(passwordEncoder, never()).encode(anyString());
-        verify(clientRepository, never()).save(any(Client.class));
+        verify(clientRepository, never()).save(any(ClientProfile.class));
     }
 
     @Test
@@ -98,7 +98,7 @@ class ResetPasswordUseCaseImplTest {
         String email = "example@email.com";
         String newPassword = "newPassword123";
         ResetPasswordRequest request = new ResetPasswordRequest(token, newPassword);
-        Client client = new Client(email, "oldPassword");
+        ClientProfile client = new ClientProfile(email, "oldPassword");
         
         when(clientRepository.findByEmail(email)).thenReturn(Optional.of(client));
         when(passwordEncoder.encode(anyString())).thenThrow(new RuntimeException("Encoding failed"));
@@ -121,7 +121,7 @@ class ResetPasswordUseCaseImplTest {
         
         when(clientRepository.findByEmail(email)).thenReturn(Optional.of(client));
         when(passwordEncoder.encode(newPassword)).thenReturn("encodedPassword");
-        when(clientRepository.save(any(Client.class))).thenThrow(new RuntimeException("Save failed"));
+        when(clientRepository.save(any(ClientProfile.class))).thenThrow(new RuntimeException("Save failed"));
 
         // When & Then
         RuntimeException exception = assertThrows(RuntimeException.class, 
