@@ -45,6 +45,31 @@ class ProfileTest {
     }
 
     @Test
+    void whenCreatingProfileWithDifferentTypes_thenTypeIsCorrect() {
+        // Given & When
+        Profile clientProfile = new ClientProfile("password");
+        Profile adminProfile = new AdminProfile("password");
+        Profile bankerProfile = new BankerProfile("password");
+
+        // Then
+        assertEquals(ProfileType.CLIENT, clientProfile.getType());
+        assertEquals(ProfileType.ADMIN, adminProfile.getType());
+        assertEquals(ProfileType.BANKER, bankerProfile.getType());
+    }
+
+    @Test
+    void whenSettingNullEmail_thenEmailIsUpdated() {
+        // Given
+        Profile profile = new ClientProfile("password");
+        
+        // When
+        profile.setEmail(null);
+        
+        // Then
+        assertNull(profile.getEmail());
+    }
+
+    @Test
     void whenCreatingProfile_thenIdIsGenerated() {
         // Given & When
         ClientProfile profile = new ClientProfile("password");

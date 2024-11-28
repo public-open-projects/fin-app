@@ -42,6 +42,20 @@ class ClientProfileTest {
     }
 
     @Test
+    void whenUpdatingClientProfileWithNullValues_thenFieldsAreUpdated() {
+        // Given
+        ClientProfile client = new ClientProfile("client@example.com", "password");
+        
+        // When
+        client.updateProfile(null, null, null);
+
+        // Then
+        assertNull(client.getFirstName());
+        assertNull(client.getLastName());
+        assertNull(client.getPhoneNumber());
+    }
+
+    @Test
     void whenUpdatingPassword_thenPasswordIsUpdated() {
         // Given
         ClientProfile client = new ClientProfile("test@example.com", "oldPassword");

@@ -20,4 +20,19 @@ class AdminProfileTest {
         assertEquals(email, admin.getEmail());
         assertEquals(password, admin.getPassword());
     }
+
+    @Test
+    void whenUpdatingAdminProfile_thenFieldsAreUpdated() {
+        // Given
+        AdminProfile admin = new AdminProfile("admin@example.com", "password");
+        String newDepartment = "IT";
+        String newRole = "System Admin";
+
+        // When
+        admin.updateProfile(newDepartment, newRole);
+
+        // Then
+        assertEquals(newDepartment, admin.getDepartment());
+        assertEquals(newRole, admin.getRole());
+    }
 }

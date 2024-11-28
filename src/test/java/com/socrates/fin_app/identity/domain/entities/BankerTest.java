@@ -20,4 +20,19 @@ class BankerProfileTest {
         assertEquals(email, banker.getEmail());
         assertEquals(password, banker.getPassword());
     }
+
+    @Test
+    void whenUpdatingBankerProfile_thenFieldsAreUpdated() {
+        // Given
+        BankerProfile banker = new BankerProfile("banker@example.com", "password");
+        String newBranch = "Main Branch";
+        String newPosition = "Senior Banker";
+
+        // When
+        banker.updateProfile(newBranch, newPosition);
+
+        // Then
+        assertEquals(newBranch, banker.getBranch());
+        assertEquals(newPosition, banker.getPosition());
+    }
 }
