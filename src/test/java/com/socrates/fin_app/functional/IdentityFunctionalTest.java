@@ -1,5 +1,6 @@
 package com.socrates.fin_app.functional;
 
+import com.socrates.fin_app.functional.config.TestSecurityConfig;
 import com.socrates.fin_app.identity.application.dto.request.*;
 import com.socrates.fin_app.identity.application.dto.response.*;
 import com.socrates.fin_app.identity.domain.entities.*;
@@ -9,14 +10,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = {
+        "spring.main.allow-bean-definition-overriding=true",
+        "spring.security.user.name=test",
+        "spring.security.user.password=test"
+    }
+)
 @ActiveProfiles("test")
+@Import(TestSecurityConfig.class)
 class IdentityFunctionalTest {
 
     @Autowired
@@ -37,6 +47,16 @@ class IdentityFunctionalTest {
     void setUp() {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        // Clear repositories
+        clientRepository.deleteAll();
+        adminRepository.deleteAll();
+        bankerRepository.deleteAll();
+        
+        // Configure RestTemplate to not follow redirects
+        restTemplate = restTemplate.mutate()
+            .setMaxRedirects(0)
+            .build();
     }
 
     @Test
