@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class Auth0IdpProviderTest {
@@ -23,6 +23,9 @@ class Auth0IdpProviderTest {
 
     @Mock
     private Request<CreatedUser> request;
+    
+    @Mock
+    private Response<CreatedUser> response;
 
     private Auth0IdpProvider auth0IdpProvider;
 
@@ -35,11 +38,11 @@ class Auth0IdpProviderTest {
     void whenCreatingValidAccount_thenSucceeds() throws Auth0Exception {
         // Given
         CreatedUser createdUser = new CreatedUser();
-        createdUser.setEmail("test@example.com");
         
         when(auth0Client.signUp(anyString(), anyString(), anyString()))
             .thenReturn(request);
-        when(request.execute()).thenReturn(createdUser);
+        when(request.execute()).thenReturn(response);
+        when(response.getBody()).thenReturn(createdUser);
 
         // When & Then
         assertDoesNotThrow(() -> 
