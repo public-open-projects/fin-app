@@ -26,6 +26,11 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
     @Override
     @Transactional
     public RegistrationResponse execute(ClientRegistrationRequest request) {
+        // First check if email already exists
+        if (clientRepository.existsByEmail(request.email())) {
+            throw new IllegalStateException("Email already registered");
+        }
+        
         try {
             // Create account in IDP first
             idpProvider.createClientAccount(request.email(), request.password());
@@ -42,9 +47,6 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
                 savedClient.getEmail()
             );
             
-        } catch (DataIntegrityViolationException e) {
-            // Handle duplicate email case
-            throw new IllegalStateException("Email already registered");
         } catch (Exception e) {
             // Handle other validation/processing errors
             throw new IllegalStateException("Registration failed: " + e.getMessage());
