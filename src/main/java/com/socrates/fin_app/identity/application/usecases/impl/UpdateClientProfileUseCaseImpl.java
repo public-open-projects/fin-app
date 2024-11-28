@@ -30,7 +30,10 @@ public class UpdateClientProfileUseCaseImpl implements UpdateClientProfileUseCas
             throw new IllegalStateException("Email already in use");
         }
         
-        // Update profile
+        // Update email first
+        client.setEmail(request.email());
+        
+        // Then update other profile fields
         client.updateProfile(
             request.firstName(),
             request.lastName(),
