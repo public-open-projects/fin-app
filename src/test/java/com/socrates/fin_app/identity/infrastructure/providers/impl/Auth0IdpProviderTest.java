@@ -4,9 +4,9 @@ import com.auth0.client.auth.AuthAPI;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.CreatedUser;
 import com.auth0.json.auth.TokenHolder;
-import com.auth0.net.Request;
-import com.auth0.net.Response;
+import com.auth0.net.TokenRequest;
 import com.auth0.net.SignUpRequest;
+import com.auth0.net.Response;
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,13 +43,13 @@ class Auth0IdpProviderTest {
         String email = "test@example.com";
         String password = "password123";
         TokenHolder tokenHolder = mock(TokenHolder.class);
-        Request<TokenHolder> authRequest = mock(Request.class);
+        TokenRequest tokenRequest = mock(TokenRequest.class);
         Response<TokenHolder> tokenResponse = mock(Response.class);
         
         when(tokenHolder.getIdToken()).thenReturn("valid.jwt.token");
-        when(auth0Client.login(email, password)).thenReturn(authRequest);
-        when(authRequest.setRealm(anyString())).thenReturn(authRequest);
-        when(authRequest.execute()).thenReturn(tokenResponse);
+        when(auth0Client.login(email, password)).thenReturn(tokenRequest);
+        when(tokenRequest.setRealm(anyString())).thenReturn(tokenRequest);
+        when(tokenRequest.execute()).thenReturn(tokenResponse);
         when(tokenResponse.getBody()).thenReturn(tokenHolder);
 
         // When
@@ -64,13 +64,13 @@ class Auth0IdpProviderTest {
     void whenAuthenticatingWithNullToken_thenThrowsException() throws Auth0Exception {
         // Given
         TokenHolder tokenHolder = mock(TokenHolder.class);
-        Request<TokenHolder> authRequest = mock(Request.class);
+        TokenRequest tokenRequest = mock(TokenRequest.class);
         Response<TokenHolder> tokenResponse = mock(Response.class);
         
         when(tokenHolder.getIdToken()).thenReturn(null);
-        when(auth0Client.login(anyString(), anyString())).thenReturn(authRequest);
-        when(authRequest.setRealm(anyString())).thenReturn(authRequest);
-        when(authRequest.execute()).thenReturn(tokenResponse);
+        when(auth0Client.login(anyString(), anyString())).thenReturn(tokenRequest);
+        when(tokenRequest.setRealm(anyString())).thenReturn(tokenRequest);
+        when(tokenRequest.execute()).thenReturn(tokenResponse);
         when(tokenResponse.getBody()).thenReturn(tokenHolder);
 
         // When & Then
@@ -81,7 +81,7 @@ class Auth0IdpProviderTest {
     @Test
     void whenCreatingAccountWithNullResponse_thenThrowsException() throws Auth0Exception {
         // Given
-        Request<CreatedUser> request = mock(Request.class);
+        SignUpRequest request = mock(SignUpRequest.class);
         Response<CreatedUser> nullResponse = mock(Response.class);
         
         when(auth0Client.signUp(anyString(), anyString(), anyString())).thenReturn(request);
