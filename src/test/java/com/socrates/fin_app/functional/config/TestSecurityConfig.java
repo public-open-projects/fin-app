@@ -21,11 +21,16 @@ public class TestSecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Public endpoints that don't require authentication
                 .requestMatchers("/api/clients/register").permitAll()
                 .requestMatchers("/api/clients/login").permitAll()
                 .requestMatchers("/api/clients/forgot-password").permitAll()
-                .requestMatchers("/api/**").authenticated())
-            .httpBasic(Customizer.withDefaults());
+                .requestMatchers("/api/admins/login").permitAll()
+                .requestMatchers("/api/bankers/login").permitAll()
+                // All other endpoints require authentication
+                .anyRequest().authenticated())
+            .httpBasic(Customizer.withDefaults())
+            .formLogin(form -> form.disable());
             
         return http.build();
     }
