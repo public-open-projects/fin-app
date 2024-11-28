@@ -9,10 +9,8 @@ import com.socrates.fin_app.identity.application.dto.response.PasswordRecoveryRe
 import com.socrates.fin_app.identity.application.dto.response.RegistrationResponse;
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
-import com.socrates.fin_app.identity.application.usecases.AuthenticateClientUseCase;
-import com.socrates.fin_app.identity.application.usecases.InitiatePasswordRecoveryUseCase;
-import com.socrates.fin_app.identity.application.usecases.RegisterClientUseCase;
-import com.socrates.fin_app.identity.application.usecases.UpdateClientProfileUseCase;
+import com.socrates.fin_app.identity.application.usecases.*;
+import com.socrates.fin_app.identity.infrastructure.security.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +19,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -28,8 +30,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ClientController.class)
-@Import(TestSecurityConfig.class)
+@Import(ClientControllerTest.TestConfig.class)
 class ClientControllerTest {
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http.csrf().disable()
+                .authorizeRequests()
+                .anyRequest().permitAll();
+            return http.build();
+        }
+
+        @Bean
+        public JwtTokenProvider tokenProvider() {
+            return new JwtTokenProvider("test-secret-key-that-is-long-enough-for-testing", 3600000L);
+        }
+    }
 
     @Autowired
     private MockMvc mockMvc;
