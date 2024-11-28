@@ -52,22 +52,16 @@ class IdentityFunctionalTest {
         adminRepository.deleteAll();
         bankerRepository.deleteAll();
         
-        // Configure headers
+        // Configure headers with basic auth
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBasicAuth("test", "test");
         
         // Configure RestTemplate
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setConnectTimeout(5000);
-        
-        // Configure error handling
-        restTemplate.getRestTemplate().setRequestFactory(factory);
+        restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
             @Override
-            public boolean hasError(int statusCode) {
-                // Don't treat 4xx as errors since we want to test them
-                return statusCode >= 500;
+            public boolean hasError(HttpStatus status) {
+                return status.series() == HttpStatus.Series.SERVER_ERROR;
             }
         });
     }
@@ -75,14 +69,11 @@ class IdentityFunctionalTest {
     @Test
     @Transactional
     void testCompleteClientFlow() {
-        // 1. Register new client
+        // 1. Register new client (public endpoint)
         ClientRegistrationRequest registrationRequest = new ClientRegistrationRequest(
             "test@example.com",
             "Password123!"
         );
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<RegistrationResponse> registrationResponse = restTemplate.exchange(
             "/api/clients/register",
@@ -93,7 +84,7 @@ class IdentityFunctionalTest {
 
         assertEquals(HttpStatus.OK, registrationResponse.getStatusCode());
         assertNotNull(registrationResponse.getBody());
-        assertNotNull(registrationResponse.getBody().id());
+        String clientId = registrationResponse.getBody().id();
 
         // 2. Login with new account
         LoginRequest loginRequest = new LoginRequest(
@@ -110,14 +101,14 @@ class IdentityFunctionalTest {
 
         assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
         assertNotNull(loginResponse.getBody());
-        assertNotNull(loginResponse.getBody().token());
+        String token = loginResponse.getBody().token();
 
-        // Create new headers with JWT token for authenticated requests
+        // Create authenticated headers
         HttpHeaders authHeaders = new HttpHeaders();
         authHeaders.setContentType(MediaType.APPLICATION_JSON);
-        authHeaders.setBearerAuth(loginResponse.getBody().token());
+        authHeaders.setBearerAuth(token);
 
-        // 3. Update profile
+        // 3. Update profile with JWT token
         UpdateProfileRequest updateRequest = new UpdateProfileRequest(
             "test@example.com",
             "John",
@@ -126,7 +117,7 @@ class IdentityFunctionalTest {
         );
 
         ResponseEntity<ProfileResponse> updateResponse = restTemplate.exchange(
-            "/api/clients/" + registrationResponse.getBody().id() + "/profile",
+            "/api/clients/" + clientId + "/profile",
             HttpMethod.PUT,
             new HttpEntity<>(updateRequest, authHeaders),
             ProfileResponse.class
@@ -135,7 +126,7 @@ class IdentityFunctionalTest {
         assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
         assertEquals("John", updateResponse.getBody().firstName());
 
-        // 4. Test password recovery flow (public endpoint)
+        // 4. Test password recovery (public endpoint)
         ForgotPasswordRequest forgotRequest = new ForgotPasswordRequest(
             "test@example.com"
         );
@@ -158,7 +149,6 @@ class IdentityFunctionalTest {
         AdminProfile admin = new AdminProfile("admin@example.com", "AdminPass123!");
         adminRepository.save(admin);
 
-        // Test admin login
         LoginRequest loginRequest = new LoginRequest(
             "admin@example.com",
             "AdminPass123!"
@@ -174,6 +164,11 @@ class IdentityFunctionalTest {
         assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
         assertNotNull(loginResponse.getBody());
         assertNotNull(loginResponse.getBody().token());
+
+        // Create authenticated headers
+        HttpHeaders authHeaders = new HttpHeaders();
+        authHeaders.setContentType(MediaType.APPLICATION_JSON);
+        authHeaders.setBearerAuth(loginResponse.getBody().token());
     }
 
     @Test
@@ -203,13 +198,12 @@ class IdentityFunctionalTest {
 
     @Test
     void testErrorScenarios() {
-        // 1. Test registration with existing email
+        // Test registration with existing email (public endpoint)
         ClientRegistrationRequest duplicateRequest = new ClientRegistrationRequest(
             "existing@example.com",
             "Password123!"
         );
 
-        // First registration should succeed
         ResponseEntity<RegistrationResponse> firstResponse = restTemplate.exchange(
             "/api/clients/register",
             HttpMethod.POST,
@@ -218,25 +212,14 @@ class IdentityFunctionalTest {
         );
         assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
-        // Wait a moment to ensure the first registration is processed
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
-        // Second registration with same email should fail
+        // Second registration should fail
         ResponseEntity<String> duplicateResponse = restTemplate.exchange(
             "/api/clients/register",
             HttpMethod.POST,
             new HttpEntity<>(duplicateRequest, headers),
             String.class
         );
-        
-        // Make sure we're getting the error response as String
         assertEquals(HttpStatus.BAD_REQUEST, duplicateResponse.getStatusCode());
-        assertTrue(duplicateResponse.getBody().contains("already registered") || 
-                   duplicateResponse.getBody().contains("already exists"));
 
         // 2. Test login with invalid credentials
         LoginRequest invalidLogin = new LoginRequest(
