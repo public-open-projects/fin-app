@@ -4,6 +4,7 @@ import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("dev")
 public class DefaultIdpProvider implements IdpProvider {
     @Override
     public void createClientAccount(String email, String password) {
