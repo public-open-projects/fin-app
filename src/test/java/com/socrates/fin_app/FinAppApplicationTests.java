@@ -11,7 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
     "spring.datasource.password=",
     "spring.datasource.driver-class-name=org.h2.Driver",
     "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
-    "spring.jpa.hibernate.ddl-auto=create-drop"
+    "spring.jpa.hibernate.ddl-auto=create-drop",
+    "spring.integration.jdbc.initialize-schema=always"
 })
 @ActiveProfiles("test")
 class FinAppApplicationTests {
@@ -26,14 +27,14 @@ class FinAppApplicationTests {
     @Test
     void applicationStartsWithDefaultProfile() {
         assertDoesNotThrow(() -> {
-            FinAppApplication.main(new String[]{});
+            FinAppApplication.main(new String[]{"--spring.profiles.active=test"});
         });
     }
 
     @Test
     void applicationStartsWithCustomPort() {
         assertDoesNotThrow(() -> {
-            FinAppApplication.main(new String[]{"--server.port=8081"});
+            FinAppApplication.main(new String[]{"--spring.profiles.active=test", "--server.port=8081"});
         });
     }
 }
