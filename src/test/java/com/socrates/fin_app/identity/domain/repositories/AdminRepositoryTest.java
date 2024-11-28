@@ -19,7 +19,7 @@ class AdminRepositoryTest {
         AdminProfile admin = new AdminProfile("admin@example.com", "password123");
 
         // When
-        Admin savedAdmin = adminRepository.save(admin);
+        AdminProfile savedAdmin = adminRepository.save(admin);
 
         // Then
         assertNotNull(savedAdmin.getId());
@@ -29,7 +29,7 @@ class AdminRepositoryTest {
     @Test
     void whenCheckingExistingEmail_thenReturnTrue() {
         // Given
-        Admin admin = new Admin("admin@example.com", "password123");
+        AdminProfile admin = new AdminProfile("admin@example.com", "password123");
         adminRepository.save(admin);
 
         // When
