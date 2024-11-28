@@ -2,7 +2,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 
 import com.socrates.fin_app.identity.application.dto.request.UpdateProfileRequest;
 import com.socrates.fin_app.identity.application.dto.response.ProfileResponse;
-import com.socrates.fin_app.identity.domain.entities.Client;
+import com.socrates.fin_app.identity.domain.entities.ClientProfile;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class UpdateClientProfileUseCaseImplTest {
         String lastName = "Doe";
         String phoneNumber = "1234567890";
 
-        Client existingClient = new Client("old@example.com", "password");
+        ClientProfile existingClient = new ClientProfile("old@example.com", "password");
         UpdateProfileRequest request = new UpdateProfileRequest(email, firstName, lastName, phoneNumber);
         
         when(clientRepository.findById(clientId)).thenReturn(Optional.of(existingClient));

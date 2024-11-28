@@ -1,6 +1,6 @@
 package com.socrates.fin_app.identity.domain.repositories;
 
-import com.socrates.fin_app.identity.domain.entities.Admin;
+import com.socrates.fin_app.identity.domain.entities.AdminProfile;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,7 +16,7 @@ class AdminRepositoryTest {
     @Test
     void whenSavingAdmin_thenAdminIsPersisted() {
         // Given
-        Admin admin = new Admin("admin@example.com", "password123");
+        AdminProfile admin = new AdminProfile("admin@example.com", "password123");
 
         // When
         Admin savedAdmin = adminRepository.save(admin);

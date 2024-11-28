@@ -31,7 +31,8 @@ class ClientProfileTest {
         String newPhone = "1234567890";
 
         // When
-        client.updateProfile(newEmail, newFirstName, newLastName, newPhone);
+        client.setEmail(newEmail);
+        client.updateProfile(newFirstName, newLastName, newPhone);
 
         // Then
         assertEquals(newEmail, client.getEmail());

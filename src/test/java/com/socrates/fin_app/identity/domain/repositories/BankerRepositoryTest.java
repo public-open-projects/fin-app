@@ -1,6 +1,6 @@
 package com.socrates.fin_app.identity.domain.repositories;
 
-import com.socrates.fin_app.identity.domain.entities.Banker;
+import com.socrates.fin_app.identity.domain.entities.BankerProfile;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,7 +16,7 @@ class BankerRepositoryTest {
     @Test
     void whenSavingBanker_thenBankerIsPersisted() {
         // Given
-        Banker banker = new Banker("banker@example.com", "password123");
+        BankerProfile banker = new BankerProfile("banker@example.com", "password123");
 
         // When
         Banker savedBanker = bankerRepository.save(banker);

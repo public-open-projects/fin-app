@@ -1,6 +1,6 @@
 package com.socrates.fin_app.identity.domain.repositories;
 
-import com.socrates.fin_app.identity.domain.entities.Client;
+import com.socrates.fin_app.identity.domain.entities.ClientProfile;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,7 +20,7 @@ class ClientRepositoryTest {
     @Test
     void whenFindByEmail_thenReturnClient() {
         // Given
-        Client client = new Client("test@example.com", "password123");
+        ClientProfile client = new ClientProfile("test@example.com", "password123");
         entityManager.persist(client);
         entityManager.flush();
 
