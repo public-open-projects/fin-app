@@ -1,2 +1,2 @@
-@org.springframework.modulith.Module(displayName = "Eligibility Assessment")
+@org.springframework.modulith.Module
 package com.socrates.fin_app.assessment;

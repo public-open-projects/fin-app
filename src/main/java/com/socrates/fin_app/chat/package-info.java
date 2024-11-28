@@ -1,2 +1,2 @@
-@org.springframework.modulith.Module(displayName = "Chat Client")
+@org.springframework.modulith.Module
 package com.socrates.fin_app.chat;

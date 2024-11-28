@@ -1,2 +1,2 @@
-@org.springframework.modulith.Module(displayName = "Purchase Order Financing")
+@org.springframework.modulith.Module
 package com.socrates.fin_app.financing;

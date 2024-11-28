@@ -1,2 +1,2 @@
-@org.springframework.modulith.Module(displayName = "Notifications and Alerts")
+@org.springframework.modulith.Module
 package com.socrates.fin_app.notifications;

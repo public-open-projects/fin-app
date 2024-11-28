@@ -1,2 +1,2 @@
-@org.springframework.modulith.Module(displayName = "AI-Driven Insights")
+@org.springframework.modulith.Module
 package com.socrates.fin_app.insights;
