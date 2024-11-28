@@ -229,15 +229,18 @@ class IdentityFunctionalTest {
         assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
         // Second registration should fail with 400 Bad Request
-        ResponseEntity<String> secondResponse = restTemplate.exchange(
-            "/api/clients/register",
-            HttpMethod.POST,
-            new HttpEntity<>(duplicateRequest, headers),
-            String.class
-        );
-        
-        assertEquals(HttpStatus.BAD_REQUEST, secondResponse.getStatusCode());
-        assertTrue(secondResponse.getBody().contains("Email already registered"));
+        try {
+            restTemplate.exchange(
+                "/api/clients/register",
+                HttpMethod.POST,
+                new HttpEntity<>(duplicateRequest, headers),
+                String.class
+            );
+            fail("Expected HttpClientErrorException.BadRequest to be thrown");
+        } catch (HttpClientErrorException ex) {
+            assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+            assertTrue(ex.getResponseBodyAsString().contains("Email already registered"));
+        }
 
         // Test login with invalid credentials
         LoginRequest invalidLogin = new LoginRequest(
