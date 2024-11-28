@@ -248,13 +248,18 @@ class IdentityFunctionalTest {
             "WrongPassword"
         );
 
-        ResponseEntity<String> loginResponse = restTemplate.exchange(
-            "/api/clients/login",
-            HttpMethod.POST,
-            new HttpEntity<>(invalidLogin, headers),
-            String.class
-        );
-        assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatusCode());
+        try {
+            restTemplate.exchange(
+                "/api/clients/login",
+                HttpMethod.POST,
+                new HttpEntity<>(invalidLogin, headers),
+                String.class
+            );
+            fail("Expected HttpClientErrorException.Unauthorized to be thrown");
+        } catch (HttpClientErrorException.Unauthorized ex) {
+            assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+            assertTrue(ex.getResponseBodyAsString().contains("Invalid credentials"));
+        }
 
         // 3. Test password recovery for non-existent email
         ForgotPasswordRequest invalidRecovery = new ForgotPasswordRequest(
