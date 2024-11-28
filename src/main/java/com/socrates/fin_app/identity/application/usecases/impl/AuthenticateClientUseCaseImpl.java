@@ -5,8 +5,7 @@ import com.socrates.fin_app.identity.application.dto.response.AuthenticationResp
 import com.socrates.fin_app.identity.application.usecases.AuthenticateClientUseCase;
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
-import com.socrates.fin_app.identity.infrastructure.security.PasswordEncoder;
-import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
+import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +33,7 @@ public class AuthenticateClientUseCaseImpl implements AuthenticateClientUseCase 
         
         return new AuthenticationResponse(
             token,
-            client.getEmail()
+            request.email()
         );
     }
 }

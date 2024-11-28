@@ -11,4 +11,10 @@ public class DefaultIdpProvider implements IdpProvider {
     public void createClientAccount(String email, String password) {
         // TODO: Implement actual IDP integration
     }
+
+    @Override
+    public String authenticateUser(String email, String password) {
+        // TODO: Implement actual authentication
+        return "dummy.token.fordev";
+    }
 }
