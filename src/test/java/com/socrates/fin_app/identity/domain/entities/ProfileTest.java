@@ -53,4 +53,72 @@ class ProfileTest {
         assertNotNull(profile.getId());
         assertEquals(36, profile.getId().length()); // UUID length
     }
+
+    @Test
+    void whenAddingProfileToUser_thenProfileIsLinked() {
+        // Given
+        User user = new User("test@example.com");
+        ClientProfile profile = new ClientProfile("password");
+
+        // When
+        user.addProfile(profile);
+
+        // Then
+        assertTrue(user.getProfiles().contains(profile));
+        assertEquals(user, profile.getUser());
+    }
+
+    @Test
+    void whenRemovingProfileFromUser_thenProfileIsUnlinked() {
+        // Given
+        User user = new User("test@example.com");
+        ClientProfile profile = new ClientProfile("password");
+        user.addProfile(profile);
+
+        // When
+        user.removeProfile(profile);
+
+        // Then
+        assertFalse(user.getProfiles().contains(profile));
+        assertNull(profile.getUser());
+    }
+
+    @Test
+    void whenCreatingUser_thenFieldsAreInitialized() {
+        // Given
+        String email = "test@example.com";
+
+        // When
+        User user = new User(email);
+
+        // Then
+        assertNotNull(user.getId());
+        assertEquals(email, user.getEmail());
+        assertNotNull(user.getProfiles());
+        assertTrue(user.getProfiles().isEmpty());
+    }
+
+    @Test
+    void whenUsingDefaultConstructor_thenObjectIsCreated() {
+        // When
+        Profile profile = new ClientProfile();
+        User user = new User();
+
+        // Then
+        assertNotNull(profile);
+        assertNotNull(user);
+    }
+
+    @Test
+    void whenSettingUserOnProfile_thenUserIsSet() {
+        // Given
+        User user = new User("test@example.com");
+        ClientProfile profile = new ClientProfile("password");
+
+        // When
+        profile.setUser(user);
+
+        // Then
+        assertEquals(user, profile.getUser());
+    }
 }
