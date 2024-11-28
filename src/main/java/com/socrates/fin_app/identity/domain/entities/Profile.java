@@ -58,7 +58,7 @@ public abstract class Profile {
         this.password = newPassword;
     }
 
-    protected void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 }
