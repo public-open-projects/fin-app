@@ -25,12 +25,21 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
         this.clientRepository = clientRepository;
         this.idpProvider = idpProvider;
     }
+
+    private boolean isValidEmail(String email) {
+        return email != null && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
+    }
     
     @Override
     @Transactional
     public RegistrationResponse execute(ClientRegistrationRequest request) {
         try {
-            // First check if email already exists
+            // Validate email format
+            if (!isValidEmail(request.email())) {
+                throw new IllegalArgumentException("Invalid email format");
+            }
+            
+            // Check if email already exists
             if (clientRepository.existsByEmail(request.email())) {
                 logger.warn("Registration attempt with existing email: {}", request.email());
                 throw new IllegalStateException("Email already registered");

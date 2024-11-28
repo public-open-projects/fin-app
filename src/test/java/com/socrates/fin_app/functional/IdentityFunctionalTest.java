@@ -265,14 +265,18 @@ class IdentityFunctionalTest {
             "nonexistent@example.com"
         );
 
-        ResponseEntity<String> invalidRecoveryResponse = restTemplate.exchange(
-            "/api/clients/forgot-password",
-            HttpMethod.POST,
-            new HttpEntity<>(invalidRecovery, headers),
-            String.class
-        );
-
-        assertEquals(HttpStatus.NOT_FOUND, invalidRecoveryResponse.getStatusCode());
+        try {
+            restTemplate.exchange(
+                "/api/clients/forgot-password",
+                HttpMethod.POST,
+                new HttpEntity<>(invalidRecovery, headers),
+                String.class
+            );
+            fail("Expected exception was not thrown");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString().contains("Email not found"));
+        }
 
         // 4. Test profile update without authentication
         UpdateProfileRequest updateRequest = new UpdateProfileRequest(
@@ -282,14 +286,17 @@ class IdentityFunctionalTest {
             "1234567890"
         );
 
-        ResponseEntity<String> unauthorizedResponse = restTemplate.exchange(
-            "/api/clients/123/profile",
-            HttpMethod.PUT,
-            new HttpEntity<>(updateRequest, headers),
-            String.class
-        );
-
-        assertEquals(HttpStatus.UNAUTHORIZED, unauthorizedResponse.getStatusCode());
+        try {
+            restTemplate.exchange(
+                "/api/clients/123/profile",
+                HttpMethod.PUT,
+                new HttpEntity<>(updateRequest, headers),
+                String.class
+            );
+            fail("Expected exception was not thrown");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.UNAUTHORIZED, e.getStatusCode());
+        }
     }
 
     @Test
@@ -312,6 +319,7 @@ class IdentityFunctionalTest {
             fail("Expected exception was not thrown");
         } catch (HttpClientErrorException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString().contains("Invalid email format"));
         }
 
         // Test registration with short password
@@ -332,6 +340,7 @@ class IdentityFunctionalTest {
             fail("Expected exception was not thrown");
         } catch (HttpClientErrorException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString().contains("Password must be at least 8 characters"));
         }
     }
 }
