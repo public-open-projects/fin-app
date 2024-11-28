@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,9 +56,8 @@ class IdentityFunctionalTest {
         bankerRepository.deleteAll();
         
         // Configure RestTemplate to not follow redirects
-        restTemplate = restTemplate.mutate()
-            .setMaxRedirects(0)
-            .build();
+        restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler());
     }
 
     @Test
