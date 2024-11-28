@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
