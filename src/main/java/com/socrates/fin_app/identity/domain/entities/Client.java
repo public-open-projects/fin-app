@@ -58,4 +58,8 @@ public class Client {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+    
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 }
