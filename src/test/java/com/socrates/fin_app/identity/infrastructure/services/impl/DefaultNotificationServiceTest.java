@@ -31,4 +31,24 @@ class DefaultNotificationServiceTest {
         assertTrue(output.contains("Sending password recovery email to: " + email));
         assertTrue(output.contains("Recovery token: " + recoveryToken));
     }
+
+    @Test
+    void whenSendingPasswordRecoveryEmailWithNullEmail_thenThrowsException() {
+        // Given
+        String recoveryToken = "recovery-token-123";
+
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () -> 
+            notificationService.sendPasswordRecoveryEmail(null, recoveryToken));
+    }
+
+    @Test
+    void whenSendingPasswordRecoveryEmailWithNullToken_thenThrowsException() {
+        // Given
+        String email = "test@example.com";
+
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () -> 
+            notificationService.sendPasswordRecoveryEmail(email, null));
+    }
 }
