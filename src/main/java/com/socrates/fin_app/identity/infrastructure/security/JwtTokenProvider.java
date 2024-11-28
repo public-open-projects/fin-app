@@ -13,12 +13,15 @@ public class JwtTokenProvider {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long validityInMilliseconds = 3600000; // 1h
 
-    public String createToken(String username) {
+    public String createToken(String username, String role) {
+        Claims claims = Jwts.claims().setSubject(username);
+        claims.put("role", role);
+        
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(username)
+                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(key)
@@ -26,12 +29,20 @@ public class JwtTokenProvider {
     }
 
     public String getUsername(String token) {
-        Claims claims = Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
-                .getBody();
+                .getBody()
+                .getSubject();
+    }
 
-        return claims.getSubject();
+    public String getRole(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
     }
 }
