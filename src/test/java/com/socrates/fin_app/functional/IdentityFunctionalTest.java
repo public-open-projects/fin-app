@@ -311,7 +311,9 @@ class IdentityFunctionalTest {
         // Test registration with short password
         ClientRegistrationRequest shortPasswordRequest = new ClientRegistrationRequest(
             "test@example.com",
-            "short"
+            "short",
+            "John",
+            "Doe"
         );
 
         try {
