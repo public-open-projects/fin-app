@@ -38,8 +38,8 @@ class Auth0IdpProviderTest {
     @Test
     void whenCreatingValidAccount_thenSucceeds() throws Auth0Exception {
         // Given
-        CreatedUser createdUser = new CreatedUser();
-        createdUser.setEmail("test@example.com");
+        CreatedUser createdUser = mock(CreatedUser.class);
+        when(createdUser.getEmail()).thenReturn("test@example.com");
         
         when(auth0Client.signUp(anyString(), anyString(), anyString()))
             .thenReturn(signUpRequest);
