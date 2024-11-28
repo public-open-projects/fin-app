@@ -3,16 +3,16 @@ package com.socrates.fin_app.identity.domain.entities;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class AdminTest {
+class AdminProfileTest {
 
     @Test
-    void whenCreatingAdmin_thenIdIsGenerated() {
+    void whenCreatingAdminProfile_thenIdIsGenerated() {
         // Given
         String email = "admin@example.com";
         String password = "adminPass123";
 
         // When
-        Admin admin = new Admin(email, password);
+        AdminProfile admin = new AdminProfile(email, password);
 
         // Then
         assertNotNull(admin.getId());

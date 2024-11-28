@@ -3,16 +3,16 @@ package com.socrates.fin_app.identity.domain.entities;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class BankerTest {
+class BankerProfileTest {
 
     @Test
-    void whenCreatingBanker_thenIdIsGenerated() {
+    void whenCreatingBankerProfile_thenIdIsGenerated() {
         // Given
         String email = "banker@example.com";
         String password = "bankerPass123";
 
         // When
-        Banker banker = new Banker(email, password);
+        BankerProfile banker = new BankerProfile(email, password);
 
         // Then
         assertNotNull(banker.getId());

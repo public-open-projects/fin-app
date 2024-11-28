@@ -3,16 +3,16 @@ package com.socrates.fin_app.identity.domain.entities;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClientTest {
+class ClientProfileTest {
 
     @Test
-    void whenCreatingClient_thenIdIsGenerated() {
+    void whenCreatingClientProfile_thenIdIsGenerated() {
         // Given
         String email = "test@example.com";
         String password = "password123";
 
         // When
-        Client client = new Client(email, password);
+        ClientProfile client = new ClientProfile(email, password);
 
         // Then
         assertNotNull(client.getId());
@@ -24,7 +24,7 @@ class ClientTest {
     @Test
     void whenUpdatingProfile_thenAllFieldsAreUpdated() {
         // Given
-        Client client = new Client("original@example.com", "password");
+        ClientProfile client = new ClientProfile("original@example.com", "password");
         String newEmail = "new@example.com";
         String newFirstName = "John";
         String newLastName = "Doe";
@@ -43,7 +43,7 @@ class ClientTest {
     @Test
     void whenUpdatingPassword_thenPasswordIsUpdated() {
         // Given
-        Client client = new Client("test@example.com", "oldPassword");
+        ClientProfile client = new ClientProfile("test@example.com", "oldPassword");
         String newPassword = "newPassword123";
 
         // When
