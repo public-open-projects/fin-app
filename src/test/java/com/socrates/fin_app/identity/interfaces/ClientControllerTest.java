@@ -7,6 +7,8 @@ import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
 import com.socrates.fin_app.identity.application.dto.response.AuthenticationResponse;
 import com.socrates.fin_app.identity.application.dto.response.PasswordRecoveryResponse;
 import com.socrates.fin_app.identity.application.dto.response.RegistrationResponse;
+import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
+import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import com.socrates.fin_app.identity.application.usecases.AuthenticateClientUseCase;
 import com.socrates.fin_app.identity.application.usecases.InitiatePasswordRecoveryUseCase;
 import com.socrates.fin_app.identity.application.usecases.RegisterClientUseCase;

@@ -3,6 +3,8 @@ package com.socrates.fin_app.identity.infrastructure.providers.impl;
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.CreatedUser;
+import com.auth0.json.auth.TokenHolder;
+import com.auth0.net.Request;
 import com.auth0.net.Response;
 import com.auth0.net.SignUpRequest;
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
@@ -42,11 +44,13 @@ class Auth0IdpProviderTest {
         String password = "password123";
         TokenHolder tokenHolder = mock(TokenHolder.class);
         Request<TokenHolder> authRequest = mock(Request.class);
+        Response<TokenHolder> tokenResponse = mock(Response.class);
         
         when(tokenHolder.getIdToken()).thenReturn("valid.jwt.token");
         when(auth0Client.login(email, password)).thenReturn(authRequest);
         when(authRequest.setRealm(anyString())).thenReturn(authRequest);
-        when(authRequest.execute()).thenReturn(new Response<>(tokenHolder));
+        when(authRequest.execute()).thenReturn(tokenResponse);
+        when(tokenResponse.getBody()).thenReturn(tokenHolder);
 
         // When
         String token = auth0IdpProvider.authenticateUser(email, password);
@@ -61,11 +65,13 @@ class Auth0IdpProviderTest {
         // Given
         TokenHolder tokenHolder = mock(TokenHolder.class);
         Request<TokenHolder> authRequest = mock(Request.class);
+        Response<TokenHolder> tokenResponse = mock(Response.class);
         
         when(tokenHolder.getIdToken()).thenReturn(null);
         when(auth0Client.login(anyString(), anyString())).thenReturn(authRequest);
         when(authRequest.setRealm(anyString())).thenReturn(authRequest);
-        when(authRequest.execute()).thenReturn(new Response<>(tokenHolder));
+        when(authRequest.execute()).thenReturn(tokenResponse);
+        when(tokenResponse.getBody()).thenReturn(tokenHolder);
 
         // When & Then
         assertThrows(AuthenticationException.class, () ->
@@ -76,8 +82,11 @@ class Auth0IdpProviderTest {
     void whenCreatingAccountWithNullResponse_thenThrowsException() throws Auth0Exception {
         // Given
         Request<CreatedUser> request = mock(Request.class);
+        Response<CreatedUser> nullResponse = mock(Response.class);
+        
         when(auth0Client.signUp(anyString(), anyString(), anyString())).thenReturn(request);
-        when(request.execute()).thenReturn(new Response<>(null));
+        when(request.execute()).thenReturn(nullResponse);
+        when(nullResponse.getBody()).thenReturn(null);
 
         // When & Then
         assertThrows(AuthenticationException.class, () ->
