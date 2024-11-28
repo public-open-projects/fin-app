@@ -6,12 +6,15 @@ import com.socrates.fin_app.identity.application.usecases.RegisterClientUseCase;
 import com.socrates.fin_app.identity.domain.entities.ClientProfile;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
+    private static final Logger logger = LoggerFactory.getLogger(RegisterClientUseCaseImpl.class);
     
     private final ClientRepository clientRepository;
     private final IdpProvider idpProvider;
