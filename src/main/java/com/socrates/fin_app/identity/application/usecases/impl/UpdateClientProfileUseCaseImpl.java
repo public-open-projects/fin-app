@@ -3,7 +3,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 import com.socrates.fin_app.identity.application.dto.request.UpdateProfileRequest;
 import com.socrates.fin_app.identity.application.dto.response.ProfileResponse;
 import com.socrates.fin_app.identity.application.usecases.UpdateClientProfileUseCase;
-import com.socrates.fin_app.identity.domain.entities.Client;
+import com.socrates.fin_app.identity.domain.entities.ClientProfile;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ public class UpdateClientProfileUseCaseImpl implements UpdateClientProfileUseCas
     @Override
     @Transactional
     public ProfileResponse execute(String clientId, UpdateProfileRequest request) {
-        Client client = clientRepository.findById(clientId)
+        ClientProfile client = clientRepository.findById(clientId)
             .orElseThrow(() -> new IllegalStateException("Client not found"));
             
         // Check if email is already in use by another client
@@ -31,13 +31,12 @@ public class UpdateClientProfileUseCaseImpl implements UpdateClientProfileUseCas
         
         // Update profile
         client.updateProfile(
-            request.email(),
             request.firstName(),
             request.lastName(),
             request.phoneNumber()
         );
         
-        Client updatedClient = clientRepository.save(client);
+        ClientProfile updatedClient = clientRepository.save(client);
         
         return new ProfileResponse(
             updatedClient.getId(),

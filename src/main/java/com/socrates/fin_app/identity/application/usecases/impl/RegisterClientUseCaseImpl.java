@@ -3,7 +3,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.response.RegistrationResponse;
 import com.socrates.fin_app.identity.application.usecases.RegisterClientUseCase;
-import com.socrates.fin_app.identity.domain.entities.Client;
+import com.socrates.fin_app.identity.domain.entities.ClientProfile;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,8 +31,9 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
             idpProvider.createClientAccount(request.email(), request.password());
             
             // If IDP creation successful, create local client record
-            Client client = new Client(request.email(), request.password());
-            Client savedClient = clientRepository.save(client);
+            ClientProfile client = new ClientProfile(request.password());
+            client.updateProfile(request.email(), null, null, null);
+            ClientProfile savedClient = clientRepository.save(client);
             
             // Return success response
             return new RegistrationResponse(
