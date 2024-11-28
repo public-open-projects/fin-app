@@ -59,7 +59,6 @@ class IdentityFunctionalTest {
         // Configure RestTemplate
         restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
             public boolean hasError(HttpStatus status) {
                 return status.series() == HttpStatus.Series.SERVER_ERROR;
             }
