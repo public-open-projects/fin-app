@@ -3,6 +3,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 import com.socrates.fin_app.identity.application.dto.request.ResetPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.response.ResetPasswordResponse;
 import com.socrates.fin_app.identity.application.usecases.ResetPasswordUseCase;
+import com.socrates.fin_app.identity.domain.exceptions.InvalidTokenException;
 import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 import com.socrates.fin_app.identity.infrastructure.security.PasswordEncoder;
