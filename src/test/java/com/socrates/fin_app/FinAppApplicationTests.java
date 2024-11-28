@@ -5,10 +5,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.MOCK  // Change to MOCK instead of RANDOM_PORT
-)
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@ActiveProfiles("test") 
 class FinAppApplicationTests {
 
     @Test
