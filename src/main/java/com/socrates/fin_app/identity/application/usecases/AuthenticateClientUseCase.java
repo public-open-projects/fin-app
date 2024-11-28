@@ -1,7 +1,8 @@
 package com.socrates.fin_app.identity.application.usecases;
 
 import com.socrates.fin_app.common.usecases.UseCaseCommand;
-import com.socrates.fin_app.identity.application.dto.LoginDto;
+import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
+import com.socrates.fin_app.identity.application.dto.response.AuthenticationResponse;
 
-public interface AuthenticateClientUseCase extends UseCaseCommand<LoginDto> {
+public interface AuthenticateClientUseCase extends UseCaseCommand<LoginRequest, AuthenticationResponse> {
 }
