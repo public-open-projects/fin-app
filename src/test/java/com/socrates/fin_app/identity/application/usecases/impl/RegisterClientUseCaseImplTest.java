@@ -66,6 +66,39 @@ class RegisterClientUseCaseImplTest {
         Exception exception = assertThrows(IllegalStateException.class, 
             () -> registerClientUseCase.execute(request));
         assertEquals("Email already registered", exception.getMessage());
+        verify(idpProvider, never()).createClientAccount(anyString(), anyString());
+    }
+
+    @Test
+    void whenInvalidEmailFormat_thenThrowException() {
+        // Given
+        String email = "invalid-email";
+        String password = "password123";
+        ClientRegistrationRequest request = new ClientRegistrationRequest(email, password, "John", "Doe");
+
+        // When & Then
+        Exception exception = assertThrows(IllegalArgumentException.class,
+            () -> registerClientUseCase.execute(request));
+        assertEquals("Invalid email format", exception.getMessage());
+        verify(clientRepository, never()).existsByEmail(anyString());
+        verify(idpProvider, never()).createClientAccount(anyString(), anyString());
+    }
+
+    @Test
+    void whenUnexpectedErrorOccurs_thenThrowException() {
+        // Given
+        String email = "test@example.com";
+        String password = "password123";
+        ClientRegistrationRequest request = new ClientRegistrationRequest(email, password, "John", "Doe");
+        
+        when(clientRepository.existsByEmail(email)).thenReturn(false);
+        when(idpProvider.createClientAccount(email, password)).thenReturn(true);
+        when(clientRepository.save(any(ClientProfile.class))).thenThrow(new RuntimeException("Unexpected error"));
+
+        // When & Then
+        Exception exception = assertThrows(IllegalStateException.class,
+            () -> registerClientUseCase.execute(request));
+        assertTrue(exception.getMessage().contains("Registration failed"));
     }
 
     @Test

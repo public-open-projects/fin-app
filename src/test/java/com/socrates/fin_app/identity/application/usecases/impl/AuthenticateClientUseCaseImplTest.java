@@ -53,4 +53,52 @@ class AuthenticateClientUseCaseImplTest {
         verify(idpProvider).authenticateUser(email, password);
         verify(clientRepository).existsByEmail(email);
     }
+
+    @Test
+    void whenClientDoesNotExist_thenThrowAuthenticationException() {
+        // Given
+        String email = "nonexistent@example.com";
+        String password = "password123";
+        LoginRequest request = new LoginRequest(email, password);
+        
+        when(clientRepository.existsByEmail(email)).thenReturn(false);
+
+        // When & Then
+        Exception exception = assertThrows(AuthenticationException.class,
+            () -> authenticateClientUseCase.execute(request));
+        assertEquals("Invalid credentials", exception.getMessage());
+        verify(idpProvider, never()).authenticateUser(anyString(), anyString());
+    }
+
+    @Test
+    void whenIdpProviderFails_thenThrowAuthenticationException() {
+        // Given
+        String email = "test@example.com";
+        String password = "password123";
+        LoginRequest request = new LoginRequest(email, password);
+        
+        when(clientRepository.existsByEmail(email)).thenReturn(true);
+        when(idpProvider.authenticateUser(email, password)).thenThrow(new RuntimeException("IDP Error"));
+
+        // When & Then
+        Exception exception = assertThrows(AuthenticationException.class,
+            () -> authenticateClientUseCase.execute(request));
+        assertEquals("Invalid credentials", exception.getMessage());
+    }
+
+    @Test
+    void whenIdpReturnsEmptyToken_thenThrowAuthenticationException() {
+        // Given
+        String email = "test@example.com";
+        String password = "password123";
+        LoginRequest request = new LoginRequest(email, password);
+        
+        when(clientRepository.existsByEmail(email)).thenReturn(true);
+        when(idpProvider.authenticateUser(email, password)).thenReturn("");
+
+        // When & Then
+        Exception exception = assertThrows(AuthenticationException.class,
+            () -> authenticateClientUseCase.execute(request));
+        assertEquals("Invalid credentials", exception.getMessage());
+    }
 }

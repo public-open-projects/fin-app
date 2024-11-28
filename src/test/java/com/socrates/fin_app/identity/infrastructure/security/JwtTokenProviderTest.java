@@ -7,10 +7,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class JwtTokenProviderTest {
 
     private JwtTokenProvider jwtTokenProvider;
+    private static final String SECRET = "testSecretKeyThatIsLongEnoughForHS256Algorithm";
+    private static final long VALIDITY = 3600000L;
 
     @BeforeEach
     void setUp() {
-        jwtTokenProvider = new JwtTokenProvider();
+        jwtTokenProvider = new JwtTokenProvider(SECRET, VALIDITY);
+    }
+
+    @Test
+    void whenConstructedWithSecret_thenTokenProviderIsCreated() {
+        assertNotNull(new JwtTokenProvider(SECRET, VALIDITY));
+    }
+
+    @Test
+    void whenConstructedWithDefaultConstructor_thenTokenProviderIsCreated() {
+        assertNotNull(new JwtTokenProvider());
     }
 
     @Test
