@@ -1,2 +1,2 @@
-@org.springframework.modulith.core.Module
+@org.springframework.modulith.ApplicationModule
 package com.socrates.fin_app.insights;
