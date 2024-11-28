@@ -32,7 +32,8 @@ public class RegisterClientUseCaseImpl implements RegisterClientUseCase {
             
             // If IDP creation successful, create local client record
             ClientProfile client = new ClientProfile(request.password());
-            client.updateProfile(request.email(), null, null, null);
+            client.setEmail(request.email());  // Set email first
+            client.updateProfile(null, null, null);  // Then update other profile fields
             ClientProfile savedClient = clientRepository.save(client);
             
             // Return success response

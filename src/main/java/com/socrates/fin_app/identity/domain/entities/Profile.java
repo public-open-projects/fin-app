@@ -13,6 +13,7 @@ public abstract class Profile {
     private String id;
     
     private String password;
+    private String email;
     private ProfileType type;
     
     @ManyToOne
@@ -37,6 +38,10 @@ public abstract class Profile {
         return password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public ProfileType getType() {
         return type;
     }
@@ -51,5 +56,9 @@ public abstract class Profile {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    protected void setEmail(String email) {
+        this.email = email;
     }
 }
