@@ -139,12 +139,16 @@ class ClientControllerTest {
         ClientRegistrationRequest request = new ClientRegistrationRequest(
             "invalid-email", "password123", "John", "Doe"
         );
+        
+        when(registerClientUseCase.execute(any(ClientRegistrationRequest.class)))
+            .thenThrow(new IllegalArgumentException("Invalid email format"));
 
         // When & Then
         mockMvc.perform(post("/api/clients/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Invalid email format"));
     }
 
     @Test

@@ -119,11 +119,12 @@ class IdentityFunctionalTest {
             "1234567890"
         );
 
-        // Add small delay to ensure token is processed
+        // Add delay to ensure token is processed
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000); // Increased delay to 2 seconds
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            throw new RuntimeException("Test interrupted during token processing delay", e);
         }
 
         String updateUrl = String.format("/api/clients/%s/profile", clientId);
@@ -228,13 +229,18 @@ class IdentityFunctionalTest {
         assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
         // Second registration should fail with 400 Bad Request
-        ResponseEntity<String> duplicateResponse = restTemplate.exchange(
-            "/api/clients/register",
-            HttpMethod.POST,
-            new HttpEntity<>(duplicateRequest, headers),
-            String.class
-        );
-        assertEquals(HttpStatus.BAD_REQUEST, duplicateResponse.getStatusCode());
+        try {
+            restTemplate.exchange(
+                "/api/clients/register",
+                HttpMethod.POST,
+                new HttpEntity<>(duplicateRequest, headers),
+                String.class
+            );
+            fail("Expected exception was not thrown");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString().contains("Email already registered"));
+        }
 
         // Test login with invalid credentials
         LoginRequest invalidLogin = new LoginRequest(

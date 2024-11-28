@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Client Identity", description = "Client identity management APIs")
 @ApiController
 @RequestMapping("/api/clients")
+@RestControllerAdvice
 public class ClientController {
     private final RegisterClientUseCase registerClientUseCase;
     private final AuthenticateClientUseCase authenticateClientUseCase;
@@ -89,5 +90,21 @@ public class ClientController {
             @PathVariable String clientId,
             @Valid @RequestBody UpdateProfileRequest request) {
         return ResponseEntity.ok(updateClientProfileUseCase.execute(clientId, request));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleValidationException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGenericException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("An unexpected error occurred");
     }
 }
