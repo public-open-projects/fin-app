@@ -126,4 +126,36 @@ class ClientControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @WithMockUser
+    void whenLoginWithInvalidCredentials_thenReturns401() throws Exception {
+        // Given
+        LoginRequest request = new LoginRequest("test@example.com", "wrongpass");
+        
+        when(authenticateClientUseCase.execute(any(LoginRequest.class)))
+            .thenThrow(new AuthenticationException("Invalid credentials"));
+
+        // When & Then
+        mockMvc.perform(post("/api/clients/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void whenForgotPasswordWithUnregisteredEmail_thenReturns404() throws Exception {
+        // Given
+        ForgotPasswordRequest request = new ForgotPasswordRequest("unknown@example.com");
+        
+        when(initiatePasswordRecoveryUseCase.execute(any(ForgotPasswordRequest.class)))
+            .thenThrow(new UserNotFoundException("Email not found"));
+
+        // When & Then
+        mockMvc.perform(post("/api/clients/forgot-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isNotFound());
+    }
 }

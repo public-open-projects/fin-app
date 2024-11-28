@@ -36,6 +36,55 @@ class Auth0IdpProviderTest {
     }
 
     @Test
+    void whenAuthenticatingValidUser_thenSucceeds() throws Auth0Exception {
+        // Given
+        String email = "test@example.com";
+        String password = "password123";
+        TokenHolder tokenHolder = mock(TokenHolder.class);
+        Request<TokenHolder> authRequest = mock(Request.class);
+        
+        when(tokenHolder.getIdToken()).thenReturn("valid.jwt.token");
+        when(auth0Client.login(email, password)).thenReturn(authRequest);
+        when(authRequest.setRealm(anyString())).thenReturn(authRequest);
+        when(authRequest.execute()).thenReturn(new Response<>(tokenHolder));
+
+        // When
+        String token = auth0IdpProvider.authenticateUser(email, password);
+
+        // Then
+        assertNotNull(token);
+        assertEquals("valid.jwt.token", token);
+    }
+
+    @Test
+    void whenAuthenticatingWithNullToken_thenThrowsException() throws Auth0Exception {
+        // Given
+        TokenHolder tokenHolder = mock(TokenHolder.class);
+        Request<TokenHolder> authRequest = mock(Request.class);
+        
+        when(tokenHolder.getIdToken()).thenReturn(null);
+        when(auth0Client.login(anyString(), anyString())).thenReturn(authRequest);
+        when(authRequest.setRealm(anyString())).thenReturn(authRequest);
+        when(authRequest.execute()).thenReturn(new Response<>(tokenHolder));
+
+        // When & Then
+        assertThrows(AuthenticationException.class, () ->
+            auth0IdpProvider.authenticateUser("test@example.com", "password123"));
+    }
+
+    @Test
+    void whenCreatingAccountWithNullResponse_thenThrowsException() throws Auth0Exception {
+        // Given
+        Request<CreatedUser> request = mock(Request.class);
+        when(auth0Client.signUp(anyString(), anyString(), anyString())).thenReturn(request);
+        when(request.execute()).thenReturn(new Response<>(null));
+
+        // When & Then
+        assertThrows(AuthenticationException.class, () ->
+            auth0IdpProvider.createClientAccount("test@example.com", "password123"));
+    }
+
+    @Test
     void whenCreatingValidAccount_thenSucceeds() throws Auth0Exception {
         // Given
         CreatedUser createdUser = mock(CreatedUser.class);
