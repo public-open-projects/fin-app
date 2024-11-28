@@ -287,13 +287,17 @@ class IdentityFunctionalTest {
             "1234567890"
         );
 
-        ResponseEntity<String> updateResponse = restTemplate.exchange(
-            "/api/clients/123/profile",
-            HttpMethod.PUT,
-            new HttpEntity<>(updateRequest, headers),
-            String.class
-        );
-        assertEquals(HttpStatus.UNAUTHORIZED, updateResponse.getStatusCode());
+        try {
+            restTemplate.exchange(
+                "/api/clients/123/profile",
+                HttpMethod.PUT,
+                new HttpEntity<>(updateRequest, headers),
+                String.class
+            );
+            fail("Expected HttpClientErrorException.Unauthorized to be thrown");
+        } catch (HttpClientErrorException.Unauthorized ex) {
+            assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+        }
     }
 
     @Test
