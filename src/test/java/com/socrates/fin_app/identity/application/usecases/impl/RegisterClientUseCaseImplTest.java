@@ -39,7 +39,7 @@ class RegisterClientUseCaseImplTest {
         String password = "password123";
         ClientRegistrationRequest request = new ClientRegistrationRequest(email, password);
         
-        Client savedClient = new Client(email, password);
+        ClientProfile savedClient = new ClientProfile(email, password);
         when(clientRepository.save(any(Client.class))).thenReturn(savedClient);
 
         // When
