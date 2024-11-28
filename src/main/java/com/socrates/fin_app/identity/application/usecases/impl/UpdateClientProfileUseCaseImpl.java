@@ -1,12 +1,13 @@
 package com.socrates.fin_app.identity.application.usecases.impl;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.socrates.fin_app.identity.application.dto.request.UpdateProfileRequest;
 import com.socrates.fin_app.identity.application.dto.response.ProfileResponse;
 import com.socrates.fin_app.identity.application.usecases.UpdateClientProfileUseCase;
 import com.socrates.fin_app.identity.domain.entities.ClientProfile;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UpdateClientProfileUseCaseImpl implements UpdateClientProfileUseCase {
