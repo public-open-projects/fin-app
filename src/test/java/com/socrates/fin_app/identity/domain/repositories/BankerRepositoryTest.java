@@ -19,7 +19,7 @@ class BankerRepositoryTest {
         BankerProfile banker = new BankerProfile("banker@example.com", "password123");
 
         // When
-        Banker savedBanker = bankerRepository.save(banker);
+        BankerProfile savedBanker = bankerRepository.save(banker);
 
         // Then
         assertNotNull(savedBanker.getId());

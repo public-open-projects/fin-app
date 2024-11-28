@@ -40,7 +40,7 @@ class RegisterClientUseCaseImplTest {
         ClientRegistrationRequest request = new ClientRegistrationRequest(email, password);
         
         ClientProfile savedClient = new ClientProfile(email, password);
-        when(clientRepository.save(any(Client.class))).thenReturn(savedClient);
+        when(clientRepository.save(any(ClientProfile.class))).thenReturn(savedClient);
 
         // When
         RegistrationResponse response = registerClientUseCase.execute(request);
@@ -50,7 +50,7 @@ class RegisterClientUseCaseImplTest {
         assertEquals(email, response.email());
         assertNotNull(response.id());
         verify(idpProvider).createClientAccount(email, password);
-        verify(clientRepository).save(any(Client.class));
+        verify(clientRepository).save(any(ClientProfile.class));
     }
 
     @Test

@@ -117,7 +117,7 @@ class ResetPasswordUseCaseImplTest {
         String email = "example@email.com";
         String newPassword = "newPassword123";
         ResetPasswordRequest request = new ResetPasswordRequest(token, newPassword);
-        Client client = new Client(email, "oldPassword");
+        ClientProfile client = new ClientProfile(email, "oldPassword");
         
         when(clientRepository.findByEmail(email)).thenReturn(Optional.of(client));
         when(passwordEncoder.encode(newPassword)).thenReturn("encodedPassword");
@@ -137,6 +137,6 @@ class ResetPasswordUseCaseImplTest {
             () -> resetPasswordUseCase.execute(null));
         verify(clientRepository, never()).findByEmail(anyString());
         verify(passwordEncoder, never()).encode(anyString());
-        verify(clientRepository, never()).save(any(Client.class));
+        verify(clientRepository, never()).save(any(ClientProfile.class));
     }
 }

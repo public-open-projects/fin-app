@@ -54,7 +54,7 @@ class UpdateClientProfileUseCaseImplTest {
         assertEquals(firstName, response.firstName());
         assertEquals(lastName, response.lastName());
         assertEquals(phoneNumber, response.phoneNumber());
-        verify(clientRepository).save(any(Client.class));
+        verify(clientRepository).save(any(ClientProfile.class));
     }
 
     @Test
@@ -71,7 +71,7 @@ class UpdateClientProfileUseCaseImplTest {
         Exception exception = assertThrows(IllegalStateException.class,
             () -> updateClientProfileUseCase.execute(clientId, request));
         assertEquals("Client not found", exception.getMessage());
-        verify(clientRepository, never()).save(any(Client.class));
+        verify(clientRepository, never()).save(any(ClientProfile.class));
     }
 
     @Test
