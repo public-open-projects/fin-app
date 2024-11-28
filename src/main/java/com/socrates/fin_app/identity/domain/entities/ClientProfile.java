@@ -23,6 +23,13 @@ public class ClientProfile extends Profile {
         setEmail(email);
     }
 
+    // Add new constructor for handling firstName and lastName
+    public ClientProfile(String email, String password, String firstName, String lastName) {
+        this(email, password);
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public void updateProfile(String firstName, String lastName, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
