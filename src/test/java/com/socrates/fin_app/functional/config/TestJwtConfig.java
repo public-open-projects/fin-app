@@ -5,13 +5,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Bean;
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import com.socrates.fin_app.identity.infrastructure.providers.impl.DefaultIdpProvider;
+import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 
 @TestConfiguration
 @Profile("test")
 public class TestJwtConfig {
     
     @Bean
-    public IdpProvider testIdpProvider() {
-        return new DefaultIdpProvider();
+    public IdpProvider testIdpProvider(TokenProvider tokenProvider) {
+        return new DefaultIdpProvider(tokenProvider);
     }
 }
