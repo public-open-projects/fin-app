@@ -25,11 +25,12 @@ import static org.junit.jupiter.api.Assertions.*;
     properties = {
         "spring.main.allow-bean-definition-overriding=true",
         "spring.security.user.name=test",
-        "spring.security.user.password=test"
+        "spring.security.user.password=test",
+        "spring.jpa.hibernate.ddl-auto=create-drop"
     }
 )
 @ActiveProfiles("test")
-@Import(TestSecurityConfig.class)
+@Import({TestSecurityConfig.class})
 class IdentityFunctionalTest {
 
     @Autowired
