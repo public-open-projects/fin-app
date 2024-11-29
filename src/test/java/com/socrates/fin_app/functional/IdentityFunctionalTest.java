@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.socrates.fin_app.functional.config.TestSecurityConfig;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
@@ -51,7 +49,6 @@ import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
     }
 )
 @ActiveProfiles("test")
-@Import(TestSecurityConfig.class)
 class IdentityFunctionalTest {
     private static final Logger logger = LoggerFactory.getLogger(IdentityFunctionalTest.class);
 
