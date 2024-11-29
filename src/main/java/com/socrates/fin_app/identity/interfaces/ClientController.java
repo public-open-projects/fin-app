@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 @Tag(name = "Client Identity", description = "Client identity management APIs")
 @ApiController
 @RequestMapping("/api/clients")
-@RestControllerAdvice
 public class ClientController {
     private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
     private final RegisterClientUseCase registerClientUseCase;
@@ -99,9 +98,11 @@ public class ClientController {
             @PathVariable String clientId,
             @Valid @RequestBody UpdateProfileRequest request) {
         try {
-            return ResponseEntity.ok(updateClientProfileUseCase.execute(clientId, request));
+            ProfileResponse response = updateClientProfileUseCase.execute(clientId, request);
+            return ResponseEntity.ok(response);
         } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                               .body(null);
         }
     }
 
