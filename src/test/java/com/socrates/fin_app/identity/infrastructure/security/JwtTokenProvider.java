@@ -17,7 +17,9 @@ public class JwtTokenProvider implements TokenProvider {
     private final Key key;
     private final long validityInMilliseconds;
 
-    public JwtTokenProvider(@Value("${jwt.validity}") long validityInMilliseconds, Key key) {
+    import org.springframework.beans.factory.annotation.Value;
+
+    public JwtTokenProvider(Key key, @Value("${jwt.validity}") long validityInMilliseconds) {
         this.key = key;
         this.validityInMilliseconds = validityInMilliseconds;
     }

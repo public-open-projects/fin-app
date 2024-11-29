@@ -17,13 +17,13 @@ import static org.mockito.Mockito.when;
 class AuthenticateBankerUseCaseImplTest {
 
     @Mock
-    private JwtTokenProvider jwtTokenProvider;
+    private DefaultIdpProvider idpProvider;
 
     private AuthenticateBankerUseCaseImpl authenticateBankerUseCase;
 
     @BeforeEach
     void setUp() {
-        authenticateBankerUseCase = new AuthenticateBankerUseCaseImpl(jwtTokenProvider);
+        authenticateBankerUseCase = new AuthenticateBankerUseCaseImpl(idpProvider);
     }
 
     @Test

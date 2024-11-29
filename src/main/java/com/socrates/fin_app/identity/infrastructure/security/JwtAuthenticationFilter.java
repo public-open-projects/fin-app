@@ -26,11 +26,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private static final String SECRET = "test-secret-key-long-enough-for-jwt-signing"; // Should match DefaultIdpProvider
 
-    private final JWTVerifier verifier;
+    private final TokenProvider tokenProvider;
 
-    public JwtAuthenticationFilter() {
-        Algorithm algorithm = Algorithm.HMAC256(SECRET);
-        this.verifier = JWT.require(algorithm).build();
+    public JwtAuthenticationFilter(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 
     @Override

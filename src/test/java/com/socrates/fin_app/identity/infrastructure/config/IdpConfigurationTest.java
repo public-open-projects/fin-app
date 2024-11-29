@@ -26,8 +26,8 @@ class IdpConfigurationTest {
         String clientSecret = "test-client-secret";
         String connection = "test-connection";
         
-        IdpProvider provider = idpConfiguration.auth0IdpProvider(
-            domain, clientId, clientSecret, connection);
+        AuthAPI authAPI = new AuthAPI(domain, clientId, clientSecret);
+        IdpProvider provider = idpConfiguration.auth0IdpProvider(authAPI, connection);
             
         assertNotNull(provider);
         assertTrue(provider instanceof Auth0IdpProvider);
