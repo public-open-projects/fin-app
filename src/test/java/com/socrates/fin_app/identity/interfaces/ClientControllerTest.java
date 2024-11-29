@@ -34,7 +34,6 @@ import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 
 @WebMvcTest(ClientController.class)
-@Import(TestSecurityConfig.class)
 class ClientControllerTest {
 
 

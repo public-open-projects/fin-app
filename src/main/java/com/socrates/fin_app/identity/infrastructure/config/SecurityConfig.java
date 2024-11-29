@@ -1,24 +1,37 @@
 package com.socrates.fin_app.identity.infrastructure.config;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-@Order(2)  // Add this to give it lower precedence than TestSecurityConfig
 public class SecurityConfig {
 
+    @Autowired
+    private Environment environment;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,7 +54,33 @@ public class SecurityConfig {
                     "/api/bankers/login"
                 ).permitAll()
                 .anyRequest().authenticated());
+
+        // Only add test authentication for test profile
+        if (Arrays.asList(environment.getActiveProfiles()).contains("test")) {
+            http.addFilterBefore(new TestAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        }
+
         return http.build();
+    }
+
+    // Test authentication filter as an inner static class
+    private static class TestAuthenticationFilter extends OncePerRequestFilter {
+        @Override
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
+                throws ServletException, IOException {
+            String authHeader = request.getHeader("Authorization");
+
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                if ("test-auth0-token".equals(token)) {
+                    SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken("test-user", null, Collections.emptyList())
+                    );
+                }
+            }
+            
+            chain.doFilter(request, response);
+        }
     }
 
     @Bean
