@@ -141,20 +141,15 @@ class IdentityFunctionalTest {
         authHeaders.setContentType(MediaType.APPLICATION_JSON);
         authHeaders.set("Authorization", "Bearer " + token);
 
-        logger.debug("About to send update profile request. URL: {}, Headers: {}, Request Body: {}", 
-            updateProfileUrl, 
-            authHeaders, 
-            updateProfileRequest);
-
         // 3. Update profile with JWT token
-        UpdateProfileRequest updateRequest = new UpdateProfileRequest(
+        UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(
             "test@example.com",
             "John",
             "Doe",
             "1234567890"
         );
 
-        String updateUrl = String.format("/api/clients/%s/profile", clientId);
+        String updateProfileUrl = String.format("/api/clients/%s/profile", clientId);
         
         // Add small delay to ensure token processing
         try {
@@ -164,9 +159,9 @@ class IdentityFunctionalTest {
         }
 
         logger.debug("About to send update profile request. URL: {}, Headers: {}, Request Body: {}", 
-            updateUrl, 
+            updateProfileUrl, 
             authHeaders, 
-            updateRequest);
+            updateProfileRequest);
 
         ResponseEntity<ProfileResponse> updateResponse = restTemplate.exchange(
             updateProfileUrl,
@@ -174,8 +169,6 @@ class IdentityFunctionalTest {
             new HttpEntity<>(updateProfileRequest, authHeaders),
             ProfileResponse.class
         );
-        
-        logger.debug("Received update profile response: {}", updateResponse);
         
         logger.debug("Received update profile response: {}", updateResponse);
 
