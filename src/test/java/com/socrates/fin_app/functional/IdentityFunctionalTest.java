@@ -1,10 +1,12 @@
 package com.socrates.fin_app.functional;
 
 import com.socrates.fin_app.functional.config.TestSecurityConfig;
+import com.socrates.fin_app.functional.config.TestJwtConfig;
 import com.socrates.fin_app.identity.application.dto.request.*;
 import com.socrates.fin_app.identity.application.dto.response.*;
 import com.socrates.fin_app.identity.domain.entities.*;
 import com.socrates.fin_app.identity.domain.repositories.*;
+import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 import org.springframework.web.client.HttpClientErrorException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
