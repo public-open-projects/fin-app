@@ -20,18 +20,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = {
         "spring.main.allow-bean-definition-overriding=true",
         "spring.security.user.name=test",
         "spring.security.user.password=test",
-        "spring.jpa.hibernate.ddl-auto=create-drop"
+        "spring.jpa.hibernate.ddl-auto=create-drop",
+        "logging.level.org.springframework.security=DEBUG",
+        "logging.level.com.socrates.fin_app=DEBUG"
     }
 )
 @ActiveProfiles("test")
 @Import({TestSecurityConfig.class})
 class IdentityFunctionalTest {
+    private static final Logger logger = LoggerFactory.getLogger(IdentityFunctionalTest.class);
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -71,6 +77,8 @@ class IdentityFunctionalTest {
     @Test
     @Transactional
     void testCompleteClientFlow() {
+        logger.debug("Starting complete client flow test");
+        
         // 1. Register new client
         ClientRegistrationRequest registrationRequest = new ClientRegistrationRequest(
             "test@example.com",
@@ -79,12 +87,14 @@ class IdentityFunctionalTest {
             "Doe"
         );
 
+        logger.debug("Sending registration request: {}", registrationRequest);
         ResponseEntity<RegistrationResponse> registrationResponse = restTemplate.exchange(
             "/api/clients/register",
             HttpMethod.POST,
             new HttpEntity<>(registrationRequest, headers),
             RegistrationResponse.class
         );
+        logger.debug("Registration response: {}", registrationResponse);
 
         assertEquals(HttpStatus.OK, registrationResponse.getStatusCode());
         assertNotNull(registrationResponse.getBody());
