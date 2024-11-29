@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.security.Key;
 import java.nio.charset.StandardCharsets;
+import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
+import com.socrates.fin_app.identity.infrastructure.security.JwtTokenProvider;
 
 @Configuration
 public class JwtConfig {
@@ -19,5 +21,10 @@ public class JwtConfig {
     @Bean
     public Key jwtSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Bean
+    public TokenProvider tokenProvider(Key jwtSigningKey) {
+        return new JwtTokenProvider(jwtSigningKey, validityInMilliseconds);
     }
 }
