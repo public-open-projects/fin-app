@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +23,11 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     
-    @Value("${auth0.domain}")
-    private String domain;
+    private final TokenProvider tokenProvider;
+
+    public JwtAuthenticationFilter(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -34,26 +36,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
             
-            if (StringUtils.hasText(jwt)) {
-                DecodedJWT decodedJWT = JWT.decode(jwt);
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                String username = tokenProvider.getSubjectFromToken(jwt);
                 
-                // Auth0 specific claims
-                String username = decodedJWT.getSubject();
-                String role = decodedJWT.getClaim("https://" + domain + "/roles").asString();
-                
-                String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
                 UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                         username, 
                         null,
-                        Collections.singletonList(new SimpleGrantedAuthority(authority))
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
                     );
                 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                logger.debug("Authentication set in SecurityContext for user: {}", username);
+                logger.debug("Set Authentication to security context for '{}', uri: {}", username, request.getRequestURI());
             }
         } catch (Exception ex) {
-            logger.error("Could not validate Auth0 token", ex);
+            logger.error("Could not set user authentication in security context", ex);
         }
 
         filterChain.doFilter(request, response);
