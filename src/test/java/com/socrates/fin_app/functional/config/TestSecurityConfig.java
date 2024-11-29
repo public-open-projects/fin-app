@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @TestConfiguration
 @EnableWebSecurity
+@Order(1)  // Add this to ensure it takes precedence over the main SecurityConfig
 public class TestSecurityConfig {
 
     @Bean

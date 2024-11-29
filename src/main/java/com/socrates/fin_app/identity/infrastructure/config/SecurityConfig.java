@@ -15,6 +15,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@Order(2)  // Add this to give it lower precedence than TestSecurityConfig
 public class SecurityConfig {
 
 
