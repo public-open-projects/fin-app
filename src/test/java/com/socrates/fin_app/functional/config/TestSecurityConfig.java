@@ -25,10 +25,6 @@ import java.nio.charset.StandardCharsets;
 @TestConfiguration
 @EnableWebSecurity
 public class TestSecurityConfig {
-
-    private static final String SECRET_KEY = TestConstants.JWT_SECRET_KEY;
-    private static final long TOKEN_VALIDITY = TestConstants.JWT_VALIDITY;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -39,42 +35,21 @@ public class TestSecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/clients/register",
-                    "/api/clients/login",
+                    "/api/clients/login", 
                     "/api/clients/forgot-password",
                     "/api/admins/login",
                     "/api/bankers/login",
                     "/error",
                     "/api/clients/**",  // Temporarily allow all client endpoints for testing
-                    // Swagger UI paths
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
                     "/webjars/**"
                 ).permitAll()
-                .anyRequest().authenticated())
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"" + authException.getMessage() + "\"}");
-                }));
+                .anyRequest().authenticated());
             
         return http.build();
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider());
-    }
-
-    @Bean
-    public TokenProvider tokenProvider() {
-        return new JwtTokenProvider(
-            Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)),
-            TOKEN_VALIDITY
-        );
     }
 
     @Bean
@@ -85,24 +60,6 @@ public class TestSecurityConfig {
             .roles("CLIENT")
             .build();
 
-        UserDetails testAdmin = User.withDefaultPasswordEncoder()
-            .username("admin@example.com")
-            .password("AdminPass123!")
-            .roles("ADMIN")
-            .build();
-
-        UserDetails testBanker = User.withDefaultPasswordEncoder()
-            .username("banker@example.com")
-            .password("BankerPass123!")
-            .roles("BANKER")
-            .build();
-
-        return new InMemoryUserDetailsManager(testClient, testAdmin, testBanker);
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+        return new InMemoryUserDetailsManager(testClient);
     }
 }

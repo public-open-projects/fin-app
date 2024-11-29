@@ -8,11 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("test")
 public class DefaultIdpProvider implements IdpProvider {
-    private final TokenProvider tokenProvider;
-
-    public DefaultIdpProvider(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
+    private static final String TEST_TOKEN = "test-auth0-token";
 
     @Override
     public void createClientAccount(String email, String password) {
@@ -21,6 +17,7 @@ public class DefaultIdpProvider implements IdpProvider {
 
     @Override
     public String authenticateUser(String email, String password) {
-        return tokenProvider.createToken(email, "CLIENT");
+        // For test purposes, return a mock Auth0 token
+        return TEST_TOKEN;
     }
 }

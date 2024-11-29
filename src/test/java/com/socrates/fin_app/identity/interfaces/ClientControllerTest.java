@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ClientController.class)
-@Import(ClientControllerTest.TestConfig.class)
+@Import(TestSecurityConfig.class)
 class ClientControllerTest {
 
     @TestConfiguration
@@ -51,14 +51,6 @@ class ClientControllerTest {
                     .anyRequest().permitAll()
                 );
             return http.build();
-        }
-
-        @Bean
-        public JwtTokenProvider tokenProvider() {
-            return new JwtTokenProvider(
-                Keys.hmacShaKeyFor(TestConstants.JWT_SECRET_KEY.getBytes()),
-                TestConstants.JWT_VALIDITY
-            );
         }
     }
 
