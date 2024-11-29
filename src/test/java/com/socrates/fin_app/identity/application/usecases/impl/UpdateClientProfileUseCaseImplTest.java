@@ -3,6 +3,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 import com.socrates.fin_app.identity.application.dto.request.UpdateProfileRequest;
 import com.socrates.fin_app.identity.application.dto.response.ProfileResponse;
 import com.socrates.fin_app.identity.domain.entities.ClientProfile;
+import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
