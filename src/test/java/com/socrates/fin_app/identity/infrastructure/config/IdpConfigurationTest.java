@@ -1,5 +1,6 @@
 package com.socrates.fin_app.identity.infrastructure.config;
 
+import com.auth0.client.auth.AuthAPI;
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import com.socrates.fin_app.identity.infrastructure.providers.impl.Auth0IdpProvider;
 import org.junit.jupiter.api.BeforeEach;

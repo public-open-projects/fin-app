@@ -2,7 +2,7 @@ package com.socrates.fin_app.identity.application.usecases.impl;
 
 import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
 import com.socrates.fin_app.identity.application.dto.response.AuthenticationResponse;
-import com.socrates.fin_app.identity.infrastructure.security.JwtTokenProvider;
+import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 class AuthenticateAdminUseCaseImplTest {
 
     @Mock
-    private DefaultIdpProvider idpProvider;
+    private IdpProvider idpProvider;
 
     private AuthenticateAdminUseCaseImpl authenticateAdminUseCase;
 
@@ -32,7 +32,7 @@ class AuthenticateAdminUseCaseImplTest {
         LoginRequest request = new LoginRequest("admin@example.com", "password123");
         String expectedToken = "jwt-token";
         
-        when(jwtTokenProvider.createToken(anyString(), anyString()))
+        when(idpProvider.authenticateUser(anyString(), anyString()))
             .thenReturn(expectedToken);
 
         // When
