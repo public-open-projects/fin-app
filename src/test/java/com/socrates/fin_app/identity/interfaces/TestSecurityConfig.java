@@ -34,8 +34,9 @@ public class TestSecurityConfig {
                     "/swagger-ui/**",
                     "/v3/api-docs/**"
                 ).permitAll()
-                // Allow all requests in test environment
-                .requestMatchers("/api/**").permitAll()
+                // Allow authenticated requests to client profile endpoints
+                .requestMatchers("/api/clients/{clientId}/profile").authenticated()
+                // Allow all other requests in test environment
                 .anyRequest().permitAll())
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
             
@@ -49,6 +50,10 @@ public class TestSecurityConfig {
 
     @Bean
     public TokenProvider tokenProvider() {
-        return new JwtTokenProvider("testSecretKeyThatIsLongEnoughForHS256Algorithm", 3600000L);
+        // Use a consistent secret key for testing
+        return new JwtTokenProvider(
+            "testSecretKeyThatIsLongEnoughForHS256AlgorithmAndTesting",
+            3600000L
+        );
     }
 }

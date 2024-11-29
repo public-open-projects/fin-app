@@ -122,10 +122,10 @@ class IdentityFunctionalTest {
 
         // Add delay to ensure token is processed
         try {
-            Thread.sleep(2000); // Increased delay to 2 seconds
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Test interrupted during token processing delay", e);
+            throw new RuntimeException("Test interrupted", e);
         }
 
         String updateUrl = String.format("/api/clients/%s/profile", clientId);
