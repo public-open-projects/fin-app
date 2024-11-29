@@ -12,11 +12,6 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class IdpConfiguration {
 
-    @Bean
-    @Profile("test")
-    public IdpProvider jwtIdpProvider() {
-        return new JwtIdpProvider();
-    }
 
     @Bean
     @Profile({"dev", "prod"})
