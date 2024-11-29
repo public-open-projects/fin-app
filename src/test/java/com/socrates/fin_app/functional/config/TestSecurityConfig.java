@@ -26,8 +26,8 @@ import java.nio.charset.StandardCharsets;
 @EnableWebSecurity
 public class TestSecurityConfig {
 
-    private static final String SECRET_KEY = "testSecretKeyThatIsLongEnoughForHS256Algorithm";
-    private static final long TOKEN_VALIDITY = 3600000L; // 1 hour
+    private static final String SECRET_KEY = TestConstants.JWT_SECRET_KEY;
+    private static final long TOKEN_VALIDITY = TestConstants.JWT_VALIDITY;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

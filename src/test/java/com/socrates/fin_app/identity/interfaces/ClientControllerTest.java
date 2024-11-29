@@ -52,13 +52,11 @@ class ClientControllerTest {
             return http.build();
         }
 
-        private static final String SECRET = "test-secret-key-that-is-long-enough-for-testing-purposes";
-        
         @Bean
         public JwtTokenProvider tokenProvider() {
             return new JwtTokenProvider(
-                Keys.hmacShaKeyFor(SECRET.getBytes()),
-                3600000L
+                Keys.hmacShaKeyFor(TestConstants.JWT_SECRET_KEY.getBytes()),
+                TestConstants.JWT_VALIDITY
             );
         }
     }
