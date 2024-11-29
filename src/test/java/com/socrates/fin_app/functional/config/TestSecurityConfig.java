@@ -1,10 +1,23 @@
 package com.socrates.fin_app.functional.config;
 
+import java.io.IOException;
+import java.util.Collections;
+
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @TestConfiguration
 @EnableWebSecurity
@@ -12,6 +25,7 @@ public class TestSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+       
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.disable())
@@ -31,7 +45,7 @@ public class TestSecurityConfig {
                     "/swagger-resources/**",
                     "/webjars/**"
                 ).permitAll()
-                .requestMatchers("/api/clients/**").authenticated()
+                
                 .anyRequest().authenticated())
             .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
@@ -43,7 +57,7 @@ public class TestSecurityConfig {
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
                 throws ServletException, IOException {
             String authHeader = request.getHeader("Authorization");
-            
+
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
                 if ("test-auth0-token".equals(token)) {

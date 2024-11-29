@@ -52,7 +52,6 @@ import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
 )
 @ActiveProfiles("test")
 @Import(TestSecurityConfig.class)
-@Import(TestSecurityConfig.class)
 class IdentityFunctionalTest {
     private static final Logger logger = LoggerFactory.getLogger(IdentityFunctionalTest.class);
 
