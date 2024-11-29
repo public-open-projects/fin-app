@@ -48,8 +48,8 @@ import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
         "spring.security.user.name=test",
         "spring.security.user.password=test",
         "spring.jpa.hibernate.ddl-auto=create-drop",
-        "logging.level.org.springframework.security=DEBUG",
-        "logging.level.com.socrates.fin_app=DEBUG"
+        "logging.level.org.springframework.security=INFO",
+        "logging.level.com.socrates.fin_app=INFO"
     }
 )
 @ActiveProfiles("test")
