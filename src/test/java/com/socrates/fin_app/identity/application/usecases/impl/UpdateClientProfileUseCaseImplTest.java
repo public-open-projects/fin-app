@@ -68,7 +68,7 @@ class UpdateClientProfileUseCaseImplTest {
         when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(IllegalStateException.class,
+        Exception exception = assertThrows(UserNotFoundException.class,
             () -> updateClientProfileUseCase.execute(clientId, request));
         assertEquals("Client not found", exception.getMessage());
         verify(clientRepository, never()).save(any(ClientProfile.class));
