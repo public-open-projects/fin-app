@@ -17,17 +17,6 @@ public class JwtTokenProvider implements TokenProvider {
     private final Key key;
     private final long validityInMilliseconds;
 
-    public JwtTokenProvider() {
-        // Use a consistent key for development/test environments
-        String defaultSecret = "defaultTestSecretKeyThatIsLongEnoughForHS256Algorithm";
-        this.key = Keys.hmacShaKeyFor(defaultSecret.getBytes(StandardCharsets.UTF_8));
-        this.validityInMilliseconds = 3600000; // 1h default
-    }
-
-    public JwtTokenProvider(String secret, long validityInMilliseconds) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.validityInMilliseconds = validityInMilliseconds;
-    }
 
     public JwtTokenProvider(Key key, long validityInMilliseconds) {
         this.key = key;

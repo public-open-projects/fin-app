@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Import(TestJwtConfig.class)
+@ActiveProfiles("test")
 class DefaultIdpProviderTest {
 
     private DefaultIdpProvider idpProvider;
