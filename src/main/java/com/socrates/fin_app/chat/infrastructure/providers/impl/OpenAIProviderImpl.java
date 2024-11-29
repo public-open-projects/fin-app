@@ -2,19 +2,19 @@ package com.socrates.fin_app.chat.infrastructure.providers.impl;
 
 import com.socrates.fin_app.chat.domain.entities.RunStatus;
 import com.socrates.fin_app.chat.infrastructure.providers.OpenAIProvider;
-import org.springframework.ai.openai.OpenAiChatClient;
+import org.springframework.ai.openai.OpenAiClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OpenAIProviderImpl implements OpenAIProvider {
-    private final OpenAiChatClient openAiChatClient;
+    private final OpenAiClient openAiClient;
     private final String assistantId;
     
     public OpenAIProviderImpl(
-            OpenAiChatClient openAiChatClient,
+            OpenAiClient openAiClient,
             @Value("${openai.assistant.id}") String assistantId) {
-        this.openAiChatClient = openAiChatClient;
+        this.openAiClient = openAiClient;
         this.assistantId = assistantId;
     }
     
