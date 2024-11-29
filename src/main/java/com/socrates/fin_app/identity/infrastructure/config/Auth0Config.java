@@ -17,7 +17,7 @@ public class Auth0Config {
     private String clientSecret;
 
     @Bean
-    public AuthAPI authAPI() {
-        return AuthAPI.newBuilder(domain, clientId, clientSecret).build();
+    public AuthAPI auth0Client() {
+        return new AuthAPI(domain, clientId, clientSecret);
     }
 }
