@@ -3,7 +3,6 @@ package com.socrates.fin_app.identity.infrastructure.config;
 import com.auth0.client.auth.AuthAPI;
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import com.socrates.fin_app.identity.infrastructure.providers.impl.Auth0IdpProvider;
-import com.socrates.fin_app.identity.infrastructure.providers.impl.JwtIdpProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class IdpConfiguration {
-
 
     @Bean
     @Profile({"dev", "prod"})
