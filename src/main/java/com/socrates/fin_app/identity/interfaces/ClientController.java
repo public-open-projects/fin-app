@@ -86,7 +86,7 @@ public class ClientController {
     }
 
     @PutMapping("/{clientId}/profile")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "bearer-jwt")
     @Operation(summary = "Update client profile", 
               description = "Update client profile information")
     @ApiResponses(value = {

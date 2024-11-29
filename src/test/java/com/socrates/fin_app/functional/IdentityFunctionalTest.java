@@ -120,7 +120,7 @@ class IdentityFunctionalTest {
         // Create authenticated headers with Bearer token
         HttpHeaders authHeaders = new HttpHeaders();
         authHeaders.setContentType(MediaType.APPLICATION_JSON);
-        authHeaders.setBearerAuth(token);
+        authHeaders.set("Authorization", "Bearer " + token);
 
         // 3. Update profile with JWT token
         UpdateProfileRequest updateRequest = new UpdateProfileRequest(
