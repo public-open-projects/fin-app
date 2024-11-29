@@ -1,6 +1,7 @@
 package com.socrates.fin_app.chat.infrastructure.config;
 
-import com.socrates.fin_app.chat.infrastructure.clients.OpenAIClient;
+import org.springframework.ai.openai.OpenAiApi;
+import org.springframework.ai.openai.client.OpenAiClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +21,7 @@ public class OpenAIConfig {
     }
     
     @Bean
-    public OpenAIClient openAIClient() {
-        return OpenAIClient.builder()
-            .apiKey(apiKey)
-            .build();
+    public OpenAiClient openAiClient() {
+        return new OpenAiClient(apiKey);
     }
 }
