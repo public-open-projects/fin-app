@@ -1,6 +1,7 @@
 package com.socrates.fin_app.identity.interfaces;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.socrates.fin_app.config.TestSecurityConfig;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
