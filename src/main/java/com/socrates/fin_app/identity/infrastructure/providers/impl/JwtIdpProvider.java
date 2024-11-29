@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("test")
-@Primary
 public class JwtIdpProvider implements IdpProvider {
     
     @Override
