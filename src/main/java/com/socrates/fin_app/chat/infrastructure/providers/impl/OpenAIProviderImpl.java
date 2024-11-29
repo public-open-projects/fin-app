@@ -1,5 +1,6 @@
 package com.socrates.fin_app.chat.infrastructure.providers.impl;
 
+import org.springframework.context.annotation.Profile;
 import com.socrates.fin_app.chat.domain.entities.RunStatus;
 import com.socrates.fin_app.chat.infrastructure.providers.OpenAIProvider;
 import org.springframework.beans.factory.annotation.Value;
