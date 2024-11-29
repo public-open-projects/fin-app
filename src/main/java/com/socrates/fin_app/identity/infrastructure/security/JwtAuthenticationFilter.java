@@ -12,11 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -24,8 +19,7 @@ import java.util.Collections;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-    private static final String SECRET = "test-secret-key-long-enough-for-jwt-signing"; // Should match DefaultIdpProvider
-
+    
     private final TokenProvider tokenProvider;
 
     public JwtAuthenticationFilter(TokenProvider tokenProvider) {
@@ -40,9 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
             
             if (StringUtils.hasText(jwt)) {
-                DecodedJWT decodedJWT = verifier.verify(jwt);
-                String username = decodedJWT.getSubject();
-                String role = decodedJWT.getClaim("role").asString();
+                String username = tokenProvider.getUsername(jwt);
+                String role = tokenProvider.getRole(jwt);
                 
                 String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
                 UsernamePasswordAuthenticationToken authentication =
@@ -55,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 logger.debug("Authentication set in SecurityContext for user: {}", username);
             }
-        } catch (JWTVerificationException ex) {
+        } catch (Exception ex) {
             logger.error("Could not validate JWT token", ex);
         }
 
