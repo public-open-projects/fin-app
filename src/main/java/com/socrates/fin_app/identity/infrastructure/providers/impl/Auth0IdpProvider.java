@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("!test & !dev") // Active in all profiles except test and dev
+@Profile("!test & !dev") // This ensures Auth0 is used in all profiles except test and dev
 public class Auth0IdpProvider implements IdpProvider {
     private final AuthAPI auth0Client;
     private final String connection;
