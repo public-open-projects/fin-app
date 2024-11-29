@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile({"test", "dev"}) // Active in both test and dev profiles
-@Primary
+@Profile("test") // Only active in test profile
 public class DefaultIdpProvider implements IdpProvider {
     @Override
     public void createClientAccount(String email, String password) {
