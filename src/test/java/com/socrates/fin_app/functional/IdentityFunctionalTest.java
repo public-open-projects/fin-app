@@ -43,6 +43,9 @@ class IdentityFunctionalTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
+    private TokenProvider tokenProvider;
+
+    @Autowired
     private ClientRepository clientRepository;
 
     @Autowired
@@ -52,6 +55,10 @@ class IdentityFunctionalTest {
     private BankerRepository bankerRepository;
 
     private HttpHeaders headers;
+
+    private String getTestJwtToken(String email, String role) {
+        return tokenProvider.createToken(email, role);
+    }
 
     @BeforeEach
     void setUp() {
