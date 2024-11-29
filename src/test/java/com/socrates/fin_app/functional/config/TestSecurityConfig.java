@@ -20,7 +20,7 @@ public class TestSecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/clients/register",
-                    "/api/clients/login",
+                    "/api/clients/login", 
                     "/api/clients/forgot-password",
                     "/api/admins/login",
                     "/api/bankers/login",
@@ -29,11 +29,31 @@ public class TestSecurityConfig {
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
-                    "/webjars/**",
-                    "/api/clients/**"  // Temporarily allow all client endpoints for testing
+                    "/webjars/**"
                 ).permitAll()
-                .anyRequest().authenticated());
+                .requestMatchers("/api/clients/**").authenticated()
+                .anyRequest().authenticated())
+            .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    private static class JwtAuthenticationFilter extends OncePerRequestFilter {
+        @Override
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
+                throws ServletException, IOException {
+            String authHeader = request.getHeader("Authorization");
+            
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                if ("test-auth0-token".equals(token)) {
+                    SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken("test-user", null, Collections.emptyList())
+                    );
+                }
+            }
+            
+            chain.doFilter(request, response);
+        }
     }
 }
