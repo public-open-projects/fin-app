@@ -32,13 +32,11 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Swagger UI v3 (OpenAPI)
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
                 .requestMatchers("/swagger-resources/**").permitAll()
                 .requestMatchers("/webjars/**").permitAll()
-                // Public endpoints
                 .requestMatchers(
                     "/api/clients/register",
                     "/api/clients/login",
