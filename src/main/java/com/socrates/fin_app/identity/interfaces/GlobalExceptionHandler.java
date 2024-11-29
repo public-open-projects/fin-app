@@ -6,10 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import java.time.LocalDateTime;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
+@ControllerAdvice("com.socrates.fin_app.identity.interfaces")
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class IdentityExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException e) {
