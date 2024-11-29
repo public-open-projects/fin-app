@@ -20,10 +20,14 @@ import com.socrates.fin_app.identity.infrastructure.security.JwtAuthenticationFi
 import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 import com.socrates.fin_app.identity.infrastructure.security.JwtTokenProvider;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 
 @TestConfiguration
 @EnableWebSecurity
 public class TestSecurityConfig {
+
+    private static final String SECRET_KEY = "testSecretKeyThatIsLongEnoughForHS256Algorithm";
+    private static final long TOKEN_VALIDITY = 3600000L; // 1 hour
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -68,8 +72,8 @@ public class TestSecurityConfig {
     @Bean
     public TokenProvider tokenProvider() {
         return new JwtTokenProvider(
-            Keys.hmacShaKeyFor("testSecretKeyThatIsLongEnoughForHS256Algorithm".getBytes()),
-            3600000L
+            Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)),
+            TOKEN_VALIDITY
         );
     }
 
