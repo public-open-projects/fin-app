@@ -1,5 +1,6 @@
 package com.socrates.fin_app.identity.infrastructure.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,7 +18,7 @@ public class JwtTokenProvider implements TokenProvider {
     private final Key key;
     private final long validityInMilliseconds;
 
-    public JwtTokenProvider(@Value("${jwt.validity}") long validityInMilliseconds, Key key) {
+    public JwtTokenProvider(Key key, @Value("${jwt.validity}") long validityInMilliseconds) {
         this.key = key;
         this.validityInMilliseconds = validityInMilliseconds;
     }
