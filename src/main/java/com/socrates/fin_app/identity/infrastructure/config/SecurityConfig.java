@@ -37,8 +37,7 @@ public class SecurityConfig {
                     "/api/admins/login",
                     "/api/bankers/login"
                 ).permitAll()
-                .anyRequest().authenticated())
-            
+                .anyRequest().authenticated());
         return http.build();
     }
 

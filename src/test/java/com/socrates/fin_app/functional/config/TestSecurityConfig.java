@@ -16,10 +16,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import com.socrates.fin_app.identity.infrastructure.security.JwtAuthenticationFilter;
-import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
-import com.socrates.fin_app.identity.infrastructure.security.JwtTokenProvider;
-import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 
 @TestConfiguration
