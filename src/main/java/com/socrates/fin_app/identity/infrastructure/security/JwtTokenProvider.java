@@ -42,7 +42,7 @@ public class JwtTokenProvider implements TokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         logger.debug("Created token for user {}: {}", username, token);
         return token;
