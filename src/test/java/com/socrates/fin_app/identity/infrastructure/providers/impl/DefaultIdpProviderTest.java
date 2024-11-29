@@ -10,17 +10,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
 class DefaultIdpProviderTest {
 
     private DefaultIdpProvider idpProvider;
     
-    @Mock
+    @Autowired
     private TokenProvider tokenProvider;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        when(tokenProvider.createToken(anyString(), anyString())).thenReturn("test-token");
         idpProvider = new DefaultIdpProvider(tokenProvider);
     }
 
