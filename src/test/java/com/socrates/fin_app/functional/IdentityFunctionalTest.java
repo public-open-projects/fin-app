@@ -141,6 +141,11 @@ class IdentityFunctionalTest {
         authHeaders.setContentType(MediaType.APPLICATION_JSON);
         authHeaders.set("Authorization", "Bearer " + token);
 
+        logger.debug("About to send update profile request. URL: {}, Headers: {}, Request Body: {}", 
+            updateUrl, 
+            authHeaders, 
+            updateRequest);
+
         // 3. Update profile with JWT token
         UpdateProfileRequest updateRequest = new UpdateProfileRequest(
             "test@example.com",

@@ -58,4 +58,15 @@ public class TestSecurityConfig {
 
         return new InMemoryUserDetailsManager(testClient);
     }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails testClient = User.withDefaultPasswordEncoder()
+            .username("test@example.com")
+            .password("Password123!")
+            .roles("CLIENT")
+            .build();
+
+        return new InMemoryUserDetailsManager(testClient);
+    }
 }
