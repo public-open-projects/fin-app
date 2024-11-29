@@ -70,9 +70,6 @@ class IdentityFunctionalTest {
 
     private HttpHeaders headers;
 
-    private String getTestJwtToken(String email, String role) {
-        return tokenProvider.createToken(email, role);
-    }
 
     @BeforeEach
     void setUp() {
