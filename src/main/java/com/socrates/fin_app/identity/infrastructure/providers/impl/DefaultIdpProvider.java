@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("dev")
+@Primary
 public class DefaultIdpProvider implements IdpProvider {
     @Override
     public void createClientAccount(String email, String password) {
