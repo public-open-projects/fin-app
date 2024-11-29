@@ -51,12 +51,15 @@ import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
     }
 )
 @ActiveProfiles("test")
-@Import(TestSecurityConfig.class)
+@Import({TestSecurityConfig.class, TestJwtConfig.class})
 class IdentityFunctionalTest {
     private static final Logger logger = LoggerFactory.getLogger(IdentityFunctionalTest.class);
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
 
     @Autowired
@@ -139,7 +142,7 @@ class IdentityFunctionalTest {
         // Create authenticated headers with Bearer token
         HttpHeaders authHeaders = new HttpHeaders();
         authHeaders.setContentType(MediaType.APPLICATION_JSON);
-        authHeaders.set("Authorization", "Bearer " + token);
+        authHeaders.setBearerAuth(token);
 
         // 3. Update profile with JWT token
         UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest(
