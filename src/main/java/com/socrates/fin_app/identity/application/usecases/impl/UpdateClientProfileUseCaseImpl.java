@@ -22,7 +22,7 @@ public class UpdateClientProfileUseCaseImpl implements UpdateClientProfileUseCas
     @Transactional
     public ProfileResponse execute(String clientId, UpdateProfileRequest request) {
         ClientProfile client = clientRepository.findById(clientId)
-            .orElseThrow(() -> new IllegalStateException("Client not found"));
+            .orElseThrow(() -> new UserNotFoundException("Client not found"));
             
         // Check if email is already in use by another client
         if (!client.getEmail().equals(request.email()) && 
