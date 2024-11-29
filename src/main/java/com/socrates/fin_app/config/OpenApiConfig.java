@@ -15,6 +15,15 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI finAppOpenAPI() {
         return new OpenAPI()
+            .components(new Components()
+                .addSecuritySchemes("bearer-jwt", 
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .description("JWT token authentication")
+                )
+            )
             .info(new Info()
                 .title("FinApp API")
                 .description("Financial Application API Documentation")
@@ -24,12 +33,7 @@ public class OpenApiConfig {
                     .email("support@finapp.com"))
                 .license(new License()
                     .name("Apache 2.0")
-                    .url("http://www.apache.org/licenses/LICENSE-2.0.html")))
-            .components(new Components()
-                .addSecuritySchemes("bearer-jwt", new SecurityScheme()
-                    .type(SecurityScheme.Type.HTTP)
-                    .scheme("bearer")
-                    .bearerFormat("JWT")
-                    .description("JWT token authentication")));
+                    .url("http://www.apache.org/licenses/LICENSE-2.0.html"))
+            );
     }
 }
