@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
     }
 )
 @ActiveProfiles("test")
-@Import({TestSecurityConfig.class})
+@Import({TestSecurityConfig.class, TestJwtConfig.class})
 class IdentityFunctionalTest {
     private static final Logger logger = LoggerFactory.getLogger(IdentityFunctionalTest.class);
 
