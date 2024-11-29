@@ -1,29 +1,21 @@
 package com.socrates.fin_app.identity.infrastructure.providers.impl;
 
-import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.socrates.fin_app.identity.infrastructure.providers.impl.TestJwtConfig;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Import(TestJwtConfig.class)
 @ActiveProfiles("test")
 class DefaultIdpProviderTest {
 
     private DefaultIdpProvider idpProvider;
-    
-    @Autowired
-    private TokenProvider tokenProvider;
 
     @BeforeEach
     void setUp() {
-        idpProvider = new DefaultIdpProvider(tokenProvider);
+        idpProvider = new DefaultIdpProvider();
     }
 
     @Test
@@ -47,6 +39,6 @@ class DefaultIdpProviderTest {
 
         // Then
         assertNotNull(token);
-        assertTrue(token.length() > 0);
+        assertEquals("test-auth0-token", token);
     }
 }
