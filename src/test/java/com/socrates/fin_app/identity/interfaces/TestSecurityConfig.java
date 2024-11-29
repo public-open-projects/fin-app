@@ -16,15 +16,29 @@ import org.springframework.security.config.Customizer;
 @EnableWebSecurity
 public class TestSecurityConfig {
 
+    private static final String SECRET_KEY = "testSecretKeyThatIsLongEnoughForHS256AlgorithmAndTesting";
+    private static final long TOKEN_VALIDITY = 3600000L; // 1 hour
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Primary
+    public TokenProvider tokenProvider() {
+        return new JwtTokenProvider(SECRET_KEY, TOKEN_VALIDITY);
+    }
+
+    @Bean
+    @Primary
+    public JwtAuthenticationFilter jwtAuthenticationFilter(TokenProvider tokenProvider) {
+        return new JwtAuthenticationFilter(tokenProvider);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints that don't require authentication
                 .requestMatchers(
                     "/api/clients/register",
                     "/api/clients/login",
@@ -34,26 +48,10 @@ public class TestSecurityConfig {
                     "/swagger-ui/**",
                     "/v3/api-docs/**"
                 ).permitAll()
-                // Allow authenticated requests to client profile endpoints
-                .requestMatchers("/api/clients/{clientId}/profile").authenticated()
-                // Allow all other requests in test environment
-                .anyRequest().permitAll())
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .requestMatchers("/api/clients/{clientId}/profile").hasAnyRole("CLIENT", "ADMIN")
+                .anyRequest().authenticated())
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
             
         return http.build();
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider());
-    }
-
-    @Bean
-    public TokenProvider tokenProvider() {
-        // Use a consistent secret key for testing
-        return new JwtTokenProvider(
-            "testSecretKeyThatIsLongEnoughForHS256AlgorithmAndTesting",
-            3600000L
-        );
     }
 }

@@ -120,15 +120,15 @@ class IdentityFunctionalTest {
             "1234567890"
         );
 
-        // Add delay to ensure token is processed
+        String updateUrl = String.format("/api/clients/%s/profile", clientId);
+        
+        // Add small delay to ensure token processing
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Test interrupted", e);
         }
 
-        String updateUrl = String.format("/api/clients/%s/profile", clientId);
         ResponseEntity<ProfileResponse> updateResponse = restTemplate.exchange(
             updateUrl,
             HttpMethod.PUT,
@@ -140,10 +140,8 @@ class IdentityFunctionalTest {
         assertNotNull(updateResponse.getBody());
         assertEquals("John", updateResponse.getBody().firstName());
 
-        // 4. Test password recovery (public endpoint)
-        ForgotPasswordRequest forgotRequest = new ForgotPasswordRequest(
-            "test@example.com"
-        );
+        // 4. Test password recovery
+        ForgotPasswordRequest forgotRequest = new ForgotPasswordRequest("test@example.com");
 
         ResponseEntity<PasswordRecoveryResponse> recoveryResponse = restTemplate.exchange(
             "/api/clients/forgot-password",
