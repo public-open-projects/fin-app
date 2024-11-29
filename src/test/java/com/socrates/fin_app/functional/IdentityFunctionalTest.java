@@ -1,29 +1,45 @@
 package com.socrates.fin_app.functional;
 
-import com.socrates.fin_app.functional.config.TestSecurityConfig;
-import com.socrates.fin_app.functional.config.TestJwtConfig;
-import com.socrates.fin_app.identity.application.dto.request.*;
-import com.socrates.fin_app.identity.application.dto.response.*;
-import com.socrates.fin_app.identity.domain.entities.*;
-import com.socrates.fin_app.identity.domain.repositories.*;
-import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
-import org.springframework.web.client.HttpClientErrorException;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.socrates.fin_app.functional.config.TestJwtConfig;
+import com.socrates.fin_app.functional.config.TestSecurityConfig;
+import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
+import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
+import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
+import com.socrates.fin_app.identity.application.dto.request.UpdateProfileRequest;
+import com.socrates.fin_app.identity.application.dto.response.AuthenticationResponse;
+import com.socrates.fin_app.identity.application.dto.response.PasswordRecoveryResponse;
+import com.socrates.fin_app.identity.application.dto.response.ProfileResponse;
+import com.socrates.fin_app.identity.application.dto.response.RegistrationResponse;
+import com.socrates.fin_app.identity.domain.entities.AdminProfile;
+import com.socrates.fin_app.identity.domain.entities.BankerProfile;
+import com.socrates.fin_app.identity.domain.repositories.AdminRepository;
+import com.socrates.fin_app.identity.domain.repositories.BankerRepository;
+import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
+import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
