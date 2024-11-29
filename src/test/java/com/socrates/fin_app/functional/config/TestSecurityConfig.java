@@ -39,7 +39,13 @@ public class TestSecurityConfig {
                     "/api/admins/login",
                     "/api/bankers/login",
                     "/error",
-                    "/api/clients/**"  // Temporarily allow all client endpoints for testing
+                    "/api/clients/**",  // Temporarily allow all client endpoints for testing
+                    // Swagger UI paths
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/swagger-resources/**",
+                    "/webjars/**"
                 ).permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
