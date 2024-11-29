@@ -1,13 +1,15 @@
 package com.socrates.fin_app.chat.infrastructure.config;
 
-import org.springframework.ai.openai.api.OpenAiApi;
-import org.springframework.ai.openai.client.OpenAiClient;
+import org.springframework.ai.autoconfigure.openai.OpenAiAutoConfiguration;
+import org.springframework.ai.openai.OpenAiChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import jakarta.annotation.PostConstruct;
 
 @Configuration
+@Import(OpenAiAutoConfiguration.class)
 public class OpenAIConfig {
     @Value("${openai.api.key}")
     private String apiKey;
@@ -21,7 +23,7 @@ public class OpenAIConfig {
     }
     
     @Bean
-    public OpenAiClient openAiClient() {
-        return new OpenAiClient(apiKey);
+    public OpenAiChatClient openAiChatClient() {
+        return new OpenAiChatClient(apiKey);
     }
 }
