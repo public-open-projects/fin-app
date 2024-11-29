@@ -8,6 +8,7 @@ import com.socrates.fin_app.identity.application.dto.response.ProfileResponse;
 import com.socrates.fin_app.identity.application.usecases.UpdateClientProfileUseCase;
 import com.socrates.fin_app.identity.domain.entities.ClientProfile;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
+import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 
 @Service
 public class UpdateClientProfileUseCaseImpl implements UpdateClientProfileUseCase {
