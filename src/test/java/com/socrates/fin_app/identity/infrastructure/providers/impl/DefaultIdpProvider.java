@@ -1,7 +1,6 @@
 package com.socrates.fin_app.identity.infrastructure.providers.impl;
 
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
-import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
