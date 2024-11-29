@@ -27,53 +27,39 @@ public class TestSecurityConfig {
     @Bean
     @Primary
     public TokenProvider tokenProvider() {
-        logger.debug("Creating token provider bean");
         return new JwtTokenProvider(SECRET_KEY, TOKEN_VALIDITY);
     }
 
     @Bean
     @Primary
-    public JwtAuthenticationFilter jwtAuthenticationFilter(TokenProvider tokenProvider) {
-        logger.debug("Creating JWT authentication filter bean");
-        return new JwtAuthenticationFilter(tokenProvider);
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(tokenProvider());
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
-        logger.debug("Configuring test security filter chain");
-        
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> {
-                csrf.disable();
-                logger.debug("CSRF disabled");
-            })
-            .cors(cors -> {
-                Customizer.withDefaults().customize(cors);
-                logger.debug("CORS configured with defaults");
-            })
-            .sessionManagement(session -> {
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                logger.debug("Session management configured as STATELESS");
-            })
-            .authorizeHttpRequests(auth -> {
-                auth
-                    .requestMatchers(
-                        "/api/clients/register",
-                        "/api/clients/login",
-                        "/api/clients/forgot-password",
-                        "/api/admins/login",
-                        "/api/bankers/login",
-                        "/error",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**"
-                    ).permitAll()
-                    .requestMatchers("/api/clients/{clientId}/profile").permitAll() // Temporarily allow for testing
-                    .anyRequest().permitAll(); // Temporarily allow all requests for testing
-                logger.debug("Authorization rules configured");
-            })
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-            
-        logger.debug("Security filter chain configuration completed");
+            .csrf(csrf -> csrf.disable())
+            .cors(Customizer.withDefaults())
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/api/clients/register",
+                    "/api/clients/login",
+                    "/api/clients/forgot-password",
+                    "/api/admins/login",
+                    "/api/bankers/login",
+                    "/error",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
+                ).permitAll()
+                .requestMatchers("/api/clients/{clientId}/**").authenticated()
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
