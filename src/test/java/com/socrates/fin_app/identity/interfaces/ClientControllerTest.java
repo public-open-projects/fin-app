@@ -1,18 +1,9 @@
 package com.socrates.fin_app.identity.interfaces;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.socrates.fin_app.config.TestSecurityConfig;
-import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
-import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
-import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
-import com.socrates.fin_app.identity.application.dto.request.UpdateProfileRequest;
-import com.socrates.fin_app.identity.application.dto.response.AuthenticationResponse;
-import com.socrates.fin_app.identity.application.dto.response.PasswordRecoveryResponse;
-import com.socrates.fin_app.identity.application.dto.response.RegistrationResponse;
-import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
-import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
-import com.socrates.fin_app.identity.application.usecases.*;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,21 +11,27 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.socrates.fin_app.functional.config.TestSecurityConfig;
+import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
+import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
+import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
+import com.socrates.fin_app.identity.application.dto.request.UpdateProfileRequest;
+import com.socrates.fin_app.identity.application.dto.response.AuthenticationResponse;
+import com.socrates.fin_app.identity.application.dto.response.PasswordRecoveryResponse;
+import com.socrates.fin_app.identity.application.dto.response.RegistrationResponse;
+import com.socrates.fin_app.identity.application.usecases.AuthenticateClientUseCase;
+import com.socrates.fin_app.identity.application.usecases.InitiatePasswordRecoveryUseCase;
+import com.socrates.fin_app.identity.application.usecases.RegisterClientUseCase;
+import com.socrates.fin_app.identity.application.usecases.UpdateClientProfileUseCase;
+import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
+import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 
 @WebMvcTest(ClientController.class)
 @Import(TestSecurityConfig.class)
