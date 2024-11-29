@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import com.socrates.fin_app.identity.infrastructure.security.JwtAuthenticationFilter;
 import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 import com.socrates.fin_app.identity.infrastructure.security.JwtTokenProvider;
+import io.jsonwebtoken.security.Keys;
 
 @TestConfiguration
 @EnableWebSecurity
@@ -66,7 +67,10 @@ public class TestSecurityConfig {
 
     @Bean
     public TokenProvider tokenProvider() {
-        return new JwtTokenProvider("testSecretKeyThatIsLongEnoughForHS256Algorithm", 3600000L);
+        return new JwtTokenProvider(
+            Keys.hmacShaKeyFor("testSecretKeyThatIsLongEnoughForHS256Algorithm".getBytes()),
+            3600000L
+        );
     }
 
     @Bean
@@ -96,27 +100,5 @@ public class TestSecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-}
-package com.socrates.fin_app.functional.config;
-
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-
-@TestConfiguration
-@EnableWebSecurity
-public class TestSecurityConfig {
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            );
-        return http.build();
     }
 }
