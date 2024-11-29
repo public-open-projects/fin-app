@@ -38,17 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ClientController.class)
 class ClientControllerTest {
 
-    @TestConfiguration
-    static class SecurityTestConfig {
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http.csrf(csrf -> csrf.disable())
-                .authorizeRequests(auth -> auth
-                    .anyRequest().permitAll()
-                );
-            return http.build();
-        }
-    }
 
     @Autowired
     private MockMvc mockMvc;

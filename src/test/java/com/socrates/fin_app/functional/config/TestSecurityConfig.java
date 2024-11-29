@@ -61,8 +61,8 @@ public class TestSecurityConfig {
 }
 package com.socrates.fin_app.functional.config;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -71,7 +71,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.socrates.fin_app.identity.infrastructure.security.JwtAuthenticationFilter;
 import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 
-@Configuration
+@TestConfiguration
 @EnableWebSecurity
 public class TestSecurityConfig {
 
