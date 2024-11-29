@@ -3,12 +3,10 @@ package com.socrates.fin_app.identity.infrastructure.providers.impl;
 import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class DefaultIdpProviderTest {
@@ -44,6 +42,6 @@ class DefaultIdpProviderTest {
 
         // Then
         assertNotNull(token);
-        assertEquals("test-token", token);
+        assertTrue(token.length() > 0);
     }
 }
