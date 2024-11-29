@@ -2,7 +2,6 @@ package com.socrates.fin_app.identity.infrastructure.config;
 
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
 import com.socrates.fin_app.identity.infrastructure.providers.impl.Auth0IdpProvider;
-import com.socrates.fin_app.identity.infrastructure.providers.impl.JwtIdpProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,13 +17,6 @@ class IdpConfigurationTest {
     @BeforeEach
     void setUp() {
         idpConfiguration = new IdpConfiguration();
-    }
-
-    @Test
-    void whenTestProfile_thenReturnsJwtIdpProvider() {
-        IdpProvider provider = idpConfiguration.jwtIdpProvider();
-        assertNotNull(provider);
-        assertTrue(provider instanceof JwtIdpProvider);
     }
 
     @Test
