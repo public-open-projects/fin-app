@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import jakarta.annotation.PostConstruct;
 
 @Configuration
+@Profile("!test")
 public class OpenAIConfig {
     @Value("${openai.api.key}")
     private String apiKey;

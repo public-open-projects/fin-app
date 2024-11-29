@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Service
+@Profile("!test")
 public class OpenAIProviderImpl implements OpenAIProvider {
     private static final String OPENAI_API_URL = "https://api.openai.com/v1";
     
