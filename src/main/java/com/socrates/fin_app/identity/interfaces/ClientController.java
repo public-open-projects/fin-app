@@ -97,13 +97,14 @@ public class ClientController {
     public ResponseEntity<ProfileResponse> updateProfile(
             @PathVariable String clientId,
             @Valid @RequestBody UpdateProfileRequest request) {
-        try {
-            ProfileResponse response = updateClientProfileUseCase.execute(clientId, request);
-            return ResponseEntity.ok(response);
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                               .body(null);
-        }
+        ProfileResponse response = updateClientProfileUseCase.execute(clientId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                           .body(ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
