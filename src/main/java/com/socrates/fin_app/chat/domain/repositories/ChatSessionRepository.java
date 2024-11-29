@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface ChatSessionRepository extends CrudRepository<ChatSession, String> {
     Optional<ChatSession> findByUserIdAndStatus(String userId, String status);
+    Optional<ChatSession> findByGuestIdAndStatus(String guestId, String status);
 }

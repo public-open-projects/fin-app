@@ -11,8 +11,10 @@ import java.util.UUID;
 public class ChatSession {
     @Id
     private String id;
-    private String userId;
+    private String userId;  // null for unauthenticated sessions
+    private String guestId; // used for unauthenticated sessions
     private String status;
+    private boolean authenticated;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     
@@ -20,9 +22,20 @@ public class ChatSession {
         // JPA
     }
     
+    // Constructor for authenticated sessions
     public ChatSession(String userId) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
+        this.authenticated = true;
+        this.status = "ACTIVE";
+        this.startTime = LocalDateTime.now();
+    }
+    
+    // Constructor for unauthenticated sessions
+    public ChatSession(String guestId, boolean authenticated) {
+        this.id = UUID.randomUUID().toString();
+        this.guestId = guestId;
+        this.authenticated = false;
         this.status = "ACTIVE";
         this.startTime = LocalDateTime.now();
     }
@@ -35,8 +48,16 @@ public class ChatSession {
         return userId; 
     }
     
+    public String getGuestId() {
+        return guestId;
+    }
+    
     public String getStatus() { 
         return status; 
+    }
+    
+    public boolean isAuthenticated() {
+        return authenticated;
     }
     
     public LocalDateTime getStartTime() { 
