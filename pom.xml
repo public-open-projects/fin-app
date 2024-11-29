@@ -173,13 +173,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.auth0</groupId>
-			<artifactId>auth0</artifactId>
-			<version>2.9.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.auth0</groupId>
-			<artifactId>jwks-rsa</artifactId>
-			<version>0.22.1</version>
+			<artifactId>java-jwt</artifactId>
+			<version>4.4.0</version>
 		</dependency>
 	</dependencies>
 	

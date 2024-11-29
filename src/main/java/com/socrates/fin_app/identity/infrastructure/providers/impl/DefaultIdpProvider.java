@@ -1,18 +1,17 @@
 package com.socrates.fin_app.identity.infrastructure.providers.impl;
 
 import com.socrates.fin_app.identity.infrastructure.providers.IdpProvider;
-import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import java.util.Date;
 
 @Component
-@Profile("test") // Only active in test profile
+@Profile("test")
 public class DefaultIdpProvider implements IdpProvider {
-    private final TokenProvider tokenProvider;
-
-    public DefaultIdpProvider(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
+    private static final String SECRET = "test-secret-key-long-enough-for-jwt-signing";
+    private static final long EXPIRATION_TIME = 864_000_000; // 10 days
 
     @Override
     public void createClientAccount(String email, String password) {
@@ -21,7 +20,16 @@ public class DefaultIdpProvider implements IdpProvider {
 
     @Override
     public String authenticateUser(String email, String password) {
-        // For test purposes, always authenticate and return a proper JWT token
-        return tokenProvider.createToken(email, "CLIENT");
+        // For test purposes, always authenticate and return a JWT token
+        return createToken(email);
+    }
+
+    private String createToken(String email) {
+        return JWT.create()
+            .withSubject(email)
+            .withClaim("role", "CLIENT")
+            .withIssuedAt(new Date())
+            .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .sign(Algorithm.HMAC256(SECRET));
     }
 }
