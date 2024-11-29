@@ -1,7 +1,6 @@
 package com.socrates.fin_app.identity.interfaces;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.socrates.fin_app.functional.config.TestConstants;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
 import com.socrates.fin_app.identity.application.dto.request.LoginRequest;
@@ -12,7 +11,6 @@ import com.socrates.fin_app.identity.application.dto.response.RegistrationRespon
 import com.socrates.fin_app.identity.domain.exceptions.AuthenticationException;
 import com.socrates.fin_app.identity.domain.exceptions.UserNotFoundException;
 import com.socrates.fin_app.identity.application.usecases.*;
-import com.socrates.fin_app.identity.infrastructure.security.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ClientController.class)
-@Import(TestSecurityConfig.class)
+@Import(TestConfig.class)
 class ClientControllerTest {
 
     @TestConfiguration

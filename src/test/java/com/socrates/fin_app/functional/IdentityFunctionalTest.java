@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.socrates.fin_app.functional.config.TestJwtConfig;
 import com.socrates.fin_app.functional.config.TestSecurityConfig;
 import com.socrates.fin_app.identity.application.dto.request.ClientRegistrationRequest;
 import com.socrates.fin_app.identity.application.dto.request.ForgotPasswordRequest;
@@ -39,7 +38,6 @@ import com.socrates.fin_app.identity.domain.entities.BankerProfile;
 import com.socrates.fin_app.identity.domain.repositories.AdminRepository;
 import com.socrates.fin_app.identity.domain.repositories.BankerRepository;
 import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
-import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -53,15 +51,13 @@ import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
     }
 )
 @ActiveProfiles("test")
-@Import({TestSecurityConfig.class, TestJwtConfig.class})
+@Import(TestSecurityConfig.class)
 class IdentityFunctionalTest {
     private static final Logger logger = LoggerFactory.getLogger(IdentityFunctionalTest.class);
 
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
-    private TokenProvider tokenProvider;
 
     @Autowired
     private ClientRepository clientRepository;
