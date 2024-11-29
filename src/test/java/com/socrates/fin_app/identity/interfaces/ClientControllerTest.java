@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -51,9 +52,14 @@ class ClientControllerTest {
             return http.build();
         }
 
+        private static final String SECRET = "test-secret-key-that-is-long-enough-for-testing-purposes";
+        
         @Bean
         public JwtTokenProvider tokenProvider() {
-            return new JwtTokenProvider("test-secret-key-that-is-long-enough-for-testing", 3600000L);
+            return new JwtTokenProvider(
+                Keys.hmacShaKeyFor(SECRET.getBytes()),
+                3600000L
+            );
         }
     }
 

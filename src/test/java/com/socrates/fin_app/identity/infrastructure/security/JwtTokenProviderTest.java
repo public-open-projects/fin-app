@@ -1,5 +1,6 @@
 package com.socrates.fin_app.identity.infrastructure.security;
 
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,17 +13,12 @@ class JwtTokenProviderTest {
 
     @BeforeEach
     void setUp() {
-        jwtTokenProvider = new JwtTokenProvider(SECRET, VALIDITY);
+        jwtTokenProvider = new JwtTokenProvider(Keys.hmacShaKeyFor(SECRET.getBytes()), VALIDITY);
     }
 
     @Test
     void whenConstructedWithSecret_thenTokenProviderIsCreated() {
-        assertNotNull(new JwtTokenProvider(SECRET, VALIDITY));
-    }
-
-    @Test
-    void whenConstructedWithDefaultConstructor_thenTokenProviderIsCreated() {
-        assertNotNull(new JwtTokenProvider());
+        assertNotNull(new JwtTokenProvider(Keys.hmacShaKeyFor(SECRET.getBytes()), VALIDITY));
     }
 
     @Test
