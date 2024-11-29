@@ -17,8 +17,7 @@ public class JwtTokenProvider implements TokenProvider {
     private final Key key;
     private final long validityInMilliseconds;
 
-
-    public JwtTokenProvider(Key key, long validityInMilliseconds) {
+    public JwtTokenProvider(@Value("${jwt.validity}") long validityInMilliseconds, Key key) {
         this.key = key;
         this.validityInMilliseconds = validityInMilliseconds;
     }
