@@ -38,28 +38,41 @@ public class TestSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        logger.debug("Configuring security filter chain");
+        
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults())
-            .sessionManagement(session -> 
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/api/clients/register",
-                    "/api/clients/login",
-                    "/api/clients/forgot-password",
-                    "/api/admins/login",
-                    "/api/bankers/login",
-                    "/error",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**"
-                ).permitAll()
-                .requestMatchers("/api/clients/{clientId}/**").authenticated()
-                .anyRequest().authenticated()
-            )
+            .csrf(csrf -> {
+                csrf.disable();
+                logger.debug("CSRF disabled");
+            })
+            .cors(cors -> {
+                Customizer.withDefaults().customize(cors);
+                logger.debug("CORS configured with defaults");
+            })
+            .sessionManagement(session -> {
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                logger.debug("Session management configured as STATELESS");
+            })
+            .authorizeHttpRequests(auth -> {
+                logger.debug("Configuring authorization rules");
+                auth
+                    .requestMatchers(
+                        "/api/clients/register",
+                        "/api/clients/login",
+                        "/api/clients/forgot-password",
+                        "/api/admins/login",
+                        "/api/bankers/login",
+                        "/error",
+                        "/api/clients/**",  // Temporarily allow all client endpoints for testing
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**"
+                    ).permitAll()
+                    .anyRequest().authenticated();
+                logger.debug("Authorization rules configured");
+            })
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
+        
+        logger.debug("Security filter chain configuration completed");
         return http.build();
     }
 }

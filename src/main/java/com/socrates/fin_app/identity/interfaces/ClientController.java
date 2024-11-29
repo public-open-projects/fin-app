@@ -97,8 +97,17 @@ public class ClientController {
     public ResponseEntity<ProfileResponse> updateProfile(
             @PathVariable String clientId,
             @Valid @RequestBody UpdateProfileRequest request) {
-        ProfileResponse response = updateClientProfileUseCase.execute(clientId, request);
-        return ResponseEntity.ok(response);
+        logger.debug("Received update profile request for clientId: {}", clientId);
+        logger.debug("Request body: {}", request);
+        
+        try {
+            ProfileResponse response = updateClientProfileUseCase.execute(clientId, request);
+            logger.debug("Profile updated successfully. Response: {}", response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error updating profile for clientId: {}", clientId, e);
+            throw e;
+        }
     }
 
     @ExceptionHandler(UserNotFoundException.class)

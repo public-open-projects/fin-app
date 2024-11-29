@@ -29,16 +29,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                   HttpServletResponse response,
                                   FilterChain filterChain) throws ServletException, IOException {
+        logger.debug("Processing request: {} {}", request.getMethod(), request.getRequestURI());
+        logger.debug("Request headers: {}", Collections.list(request.getHeaderNames())
+            .stream()
+            .collect(Collectors.toMap(
+                Function.identity(),
+                h -> Collections.list(request.getHeaders(h))
+            )));
+        
         try {
             String jwt = getJwtFromRequest(request);
+            logger.debug("Extracted JWT token: {}", jwt != null ? "present" : "not present");
 
             if (StringUtils.hasText(jwt)) {
                 String username = tokenProvider.getUsername(jwt);
                 String role = tokenProvider.getRole(jwt);
+                logger.debug("Token validation successful. Username: {}, Role: {}", username, role);
 
-                // Create authority with ROLE_ prefix if not present
                 String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
-                
                 UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                         username, 
@@ -47,20 +55,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
                 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                logger.debug("Set Authentication to security context for '{}', role: {}", username, authority);
+                logger.debug("Authentication set in SecurityContext");
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }
 
         filterChain.doFilter(request, response);
+        logger.debug("Request processing completed");
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+        logger.debug("Authorization header: {}", bearerToken);
+        
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            String token = bearerToken.substring(7);
+            logger.debug("Extracted token from Authorization header");
+            return token;
         }
+        logger.debug("No valid Bearer token found in Authorization header");
         return null;
     }
 }

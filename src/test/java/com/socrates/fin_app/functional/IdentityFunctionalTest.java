@@ -139,12 +139,19 @@ class IdentityFunctionalTest {
             Thread.currentThread().interrupt();
         }
 
+        logger.debug("About to send update profile request. URL: {}, Headers: {}, Request Body: {}", 
+            updateUrl, 
+            authHeaders, 
+            updateRequest);
+
         ResponseEntity<ProfileResponse> updateResponse = restTemplate.exchange(
             updateUrl,
             HttpMethod.PUT,
             new HttpEntity<>(updateRequest, authHeaders),
             ProfileResponse.class
         );
+        
+        logger.debug("Received update profile response: {}", updateResponse);
 
         assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
         assertNotNull(updateResponse.getBody());
