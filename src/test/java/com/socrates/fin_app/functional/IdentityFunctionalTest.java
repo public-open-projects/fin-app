@@ -141,6 +141,7 @@ class IdentityFunctionalTest {
         assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
         assertNotNull(loginResponse.getBody());
         String token = loginResponse.getBody().token();
+        logger.debug("Received token from login: {}", token);
 
         // Create authenticated headers with Bearer token
         HttpHeaders authHeaders = new HttpHeaders();
