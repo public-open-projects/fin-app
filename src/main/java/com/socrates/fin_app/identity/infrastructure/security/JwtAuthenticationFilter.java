@@ -1,18 +1,21 @@
 package com.socrates.fin_app.identity.infrastructure.security;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.socrates.fin_app.identity.infrastructure.security.TokenProvider;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -21,11 +24,8 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     
-    private final TokenProvider tokenProvider;
-
-    public JwtAuthenticationFilter(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
+    @Value("${auth0.domain}")
+    private String domain;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,8 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
             
             if (StringUtils.hasText(jwt)) {
-                String username = tokenProvider.getUsername(jwt);
-                String role = tokenProvider.getRole(jwt);
+                DecodedJWT decodedJWT = JWT.decode(jwt);
+                
+                // Auth0 specific claims
+                String username = decodedJWT.getSubject();
+                String role = decodedJWT.getClaim("https://" + domain + "/roles").asString();
                 
                 String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
                 UsernamePasswordAuthenticationToken authentication =
@@ -50,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.debug("Authentication set in SecurityContext for user: {}", username);
             }
         } catch (Exception ex) {
-            logger.error("Could not validate JWT token", ex);
+            logger.error("Could not validate Auth0 token", ex);
         }
 
         filterChain.doFilter(request, response);
