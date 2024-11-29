@@ -46,8 +46,8 @@ import com.socrates.fin_app.identity.domain.repositories.ClientRepository;
         "spring.security.user.name=test",
         "spring.security.user.password=test",
         "spring.jpa.hibernate.ddl-auto=create-drop",
-        "logging.level.org.springframework.security=INFO",
-        "logging.level.com.socrates.fin_app=INFO"
+        "logging.level.org.springframework.security=DEBUG",
+        "logging.level.com.socrates.fin_app=DEBUG"
     }
 )
 @ActiveProfiles("test")
@@ -169,6 +169,8 @@ class IdentityFunctionalTest {
             new HttpEntity<>(updateRequest, authHeaders),
             ProfileResponse.class
         );
+        
+        logger.debug("Received update profile response: {}", updateResponse);
         
         logger.debug("Received update profile response: {}", updateResponse);
 
