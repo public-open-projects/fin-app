@@ -17,6 +17,6 @@ public class GetRunStatusUseCaseImpl implements GetRunStatusUseCase {
     @Override
     public RunStatusResponse execute(String threadId, String runId) {
         RunStatus status = openAIProvider.getRunStatus(threadId, runId);
-        return new RunStatusResponse(threadId, runId, status.status(), status.messages());
+        return new RunStatusResponse(threadId, runId, status.status().toString(), status.messages());
     }
 }
