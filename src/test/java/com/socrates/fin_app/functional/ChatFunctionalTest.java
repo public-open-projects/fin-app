@@ -89,7 +89,7 @@ class ChatFunctionalTest {
         ResponseEntity<InitializeChatResponse> initResponse = restTemplate.exchange(
             "/api/chat/initialize",
             HttpMethod.POST,
-            new HttpEntity<>(initRequest, headers),
+            new HttpEntity<>(initRequest, authHeaders),
             InitializeChatResponse.class
         );
         
