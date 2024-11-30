@@ -7,51 +7,61 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChatSessionTest {
 
     @Test
-    void whenCreatingAuthenticatedSession_thenPropertiesAreCorrectlySet() {
+    void authenticatedConstructor_ShouldCreateAuthenticatedSession() {
         // Given
-        String userId = "test-user-id";
+        String userId = "testUser";
 
         // When
         ChatSession session = new ChatSession(userId);
 
         // Then
-        assertNotNull(session.getId(), "Session ID should not be null");
-        assertEquals(userId, session.getUserId(), "User ID should match");
-        assertNull(session.getGuestId(), "Guest ID should be null for authenticated session");
-        assertTrue(session.isAuthenticated(), "Session should be authenticated");
-        assertEquals("ACTIVE", session.getStatus(), "Status should be ACTIVE");
-        assertNotNull(session.getStartTime(), "Start time should not be null");
-        assertTrue(session.getStartTime().isBefore(LocalDateTime.now().plusSeconds(1)), 
-                  "Start time should be before or equal to now");
-        assertNull(session.getEndTime(), "End time should be null for new session");
+        assertNotNull(session.getId());
+        assertEquals(userId, session.getUserId());
+        assertNull(session.getGuestId());
+        assertTrue(session.isAuthenticated());
+        assertEquals("ACTIVE", session.getStatus());
+        assertNotNull(session.getStartTime());
+        assertNull(session.getEndTime());
     }
 
     @Test
-    void whenCreatingUnauthenticatedSession_thenPropertiesAreCorrectlySet() {
+    void unauthenticatedConstructor_ShouldCreateUnauthenticatedSession() {
         // Given
-        String guestId = "test-guest-id";
+        String guestId = "guest123";
 
         // When
         ChatSession session = new ChatSession(guestId, false);
 
         // Then
-        assertNotNull(session.getId(), "Session ID should not be null");
-        assertNull(session.getUserId(), "User ID should be null for unauthenticated session");
-        assertEquals(guestId, session.getGuestId(), "Guest ID should match");
-        assertFalse(session.isAuthenticated(), "Session should not be authenticated");
-        assertEquals("ACTIVE", session.getStatus(), "Status should be ACTIVE");
-        assertNotNull(session.getStartTime(), "Start time should not be null");
-        assertTrue(session.getStartTime().isBefore(LocalDateTime.now().plusSeconds(1)), 
-                  "Start time should be before or equal to now");
-        assertNull(session.getEndTime(), "End time should be null for new session");
+        assertNotNull(session.getId());
+        assertNull(session.getUserId());
+        assertEquals(guestId, session.getGuestId());
+        assertFalse(session.isAuthenticated());
+        assertEquals("ACTIVE", session.getStatus());
+        assertNotNull(session.getStartTime());
+        assertNull(session.getEndTime());
     }
 
     @Test
-    void whenUsingDefaultConstructor_thenEntityIsCreated() {
-        // When
-        ChatSession session = new ChatSession();
+    void defaultConstructor_ShouldExist() {
+        // This test verifies the existence of the protected default constructor
+        // Required by JPA
+        assertDoesNotThrow(() -> ChatSession.class.getDeclaredConstructor());
+    }
 
-        // Then
-        assertNotNull(session, "Session should be created");
+    @Test
+    void getters_ShouldReturnCorrectValues() {
+        // Given
+        String userId = "testUser";
+        ChatSession session = new ChatSession(userId);
+        LocalDateTime now = LocalDateTime.now();
+
+        // When & Then
+        assertNotNull(session.getId());
+        assertEquals(userId, session.getUserId());
+        assertEquals("ACTIVE", session.getStatus());
+        assertTrue(session.isAuthenticated());
+        assertTrue(session.getStartTime().isAfter(now.minusSeconds(1)));
+        assertTrue(session.getStartTime().isBefore(now.plusSeconds(1)));
     }
 }
