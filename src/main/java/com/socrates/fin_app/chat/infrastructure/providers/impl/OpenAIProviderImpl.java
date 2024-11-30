@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.Map;
+import java.util.List;
+import java.util.Collections;
 
 @Service
 @Profile("!test")
@@ -63,8 +65,20 @@ public class OpenAIProviderImpl implements OpenAIProvider {
         var response = restTemplate.getForObject(url, Map.class);
         
         String status = (String) response.get("status");
-        // Convert OpenAI status to our RunStatus enum
-        // TODO: Implement proper status mapping
-        return null;
+        RunStatus.Status mappedStatus = mapOpenAIStatus(status);
+        List<String> messages = Collections.emptyList(); // TODO: Implement message extraction
+        
+        return new RunStatus(mappedStatus, messages);
+    }
+
+    private RunStatus.Status mapOpenAIStatus(String openAIStatus) {
+        return switch (openAIStatus) {
+            case "completed" -> RunStatus.Status.COMPLETED;
+            case "in_progress" -> RunStatus.Status.IN_PROGRESS;
+            case "failed" -> RunStatus.Status.FAILED;
+            case "cancelled" -> RunStatus.Status.CANCELLED;
+            case "expired" -> RunStatus.Status.EXPIRED;
+            default -> RunStatus.Status.QUEUED;
+        };
     }
 }
