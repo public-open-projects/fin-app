@@ -1,5 +1,6 @@
 package com.socrates.fin_app.chat.interfaces;
 
+import org.springframework.context.annotation.Import;
 import com.socrates.fin_app.chat.application.dto.request.CreateMessageRequest;
 import com.socrates.fin_app.chat.application.dto.request.InitializeChatRequest;
 import com.socrates.fin_app.chat.application.dto.response.CreateMessageResponse;
