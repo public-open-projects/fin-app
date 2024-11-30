@@ -48,6 +48,7 @@ class ChatFunctionalTest {
     private ChatMessageRepository chatMessageRepository;
 
     private HttpHeaders headers;
+    private HttpHeaders authHeaders;
 
     @BeforeEach
     void setUp() {
@@ -55,9 +56,14 @@ class ChatFunctionalTest {
         chatMessageRepository.deleteAll();
         chatSessionRepository.deleteAll();
         
-        // Configure headers
+        // Configure basic headers
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Configure authenticated headers with test token
+        authHeaders = new HttpHeaders();
+        authHeaders.setContentType(MediaType.APPLICATION_JSON);
+        authHeaders.setBearerAuth("test-auth0-token"); // Match token from TestAuthenticationFilter
         
         // Configure RestTemplate with proper error handling
         restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
@@ -168,9 +174,6 @@ class ChatFunctionalTest {
         );
 
         // Add Bearer token to headers
-        HttpHeaders authHeaders = new HttpHeaders();
-        authHeaders.setContentType(MediaType.APPLICATION_JSON);
-        authHeaders.setBearerAuth("test-auth0-token");
 
         ResponseEntity<InitializeChatResponse> response = restTemplate.exchange(
             "/api/chat/initialize",
