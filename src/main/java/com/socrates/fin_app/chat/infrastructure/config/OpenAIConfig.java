@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import jakarta.annotation.PostConstruct;
 
 @Configuration
-@Profile("!test") // Exclude this config from test profile
+@Profile({"dev", "prod"}) // List the profiles where this config should be active
 public class OpenAIConfig {
     @Value("${openai.api.key}")
     private String apiKey;
