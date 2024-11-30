@@ -8,7 +8,6 @@ import org.springframework.web.client.RestTemplate;
 import jakarta.annotation.PostConstruct;
 
 @Configuration
-@Profile("prod")
 public class OpenAIConfig {
     @Value("${openai.api.key}")
     private String apiKey;
@@ -22,6 +21,7 @@ public class OpenAIConfig {
     }
     
     @Bean
+    @ConditionalOnProperty(name = "openai.enabled", havingValue = "true", matchIfMissing = true)
     public RestTemplate openAiRestTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add((request, body, execution) -> {
