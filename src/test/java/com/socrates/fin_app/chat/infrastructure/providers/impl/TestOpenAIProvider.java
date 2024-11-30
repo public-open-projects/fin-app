@@ -20,6 +20,6 @@ public class TestOpenAIProvider implements OpenAIProvider {
     
     @Override
     public RunStatus getRunStatus(String threadId, String runId) {
-        return RunStatus.COMPLETED;
+        return RunStatus.COMPLETED; // Now this will work with the enum
     }
 }
